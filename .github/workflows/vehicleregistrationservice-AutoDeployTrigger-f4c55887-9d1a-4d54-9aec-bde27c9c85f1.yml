@@ -19,6 +19,9 @@ jobs:
         uses: actions/checkout@v2
         with:
           path: master
+          
+      - name: List files
+        run: ls -R
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
