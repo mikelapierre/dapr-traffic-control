@@ -36,7 +36,7 @@ jobs:
       - name: Build and push container image to registry
         uses: docker/build-push-action@v2
         with:
-          context: ./src/VehicleRegistrationService
+          context: ./master/src/VehicleRegistrationService
           push: true
           tags: daprworkshopreg.azurecr.io/vehicleregistrationservice:${{ github.sha }}
 
