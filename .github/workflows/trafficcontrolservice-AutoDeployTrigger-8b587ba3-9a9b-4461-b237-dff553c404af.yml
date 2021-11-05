@@ -5,8 +5,10 @@ on:
   # Automatically trigger it when detected changes in repo
   push:
     branches: 
-      [ master/src/TrafficControlService ]
-
+      [ master ]
+    paths:
+       - master/src/TrafficControlService/**
+    
   # Allow mannually trigger 
   workflow_dispatch:      
 
