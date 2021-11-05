@@ -5,7 +5,7 @@ on:
   # Automatically trigger it when detected changes in repo
   push:
     branches: 
-      [ master ]
+      [ master/src/VehicleRegistrationService ]
 
   # Allow mannually trigger 
   workflow_dispatch:      
