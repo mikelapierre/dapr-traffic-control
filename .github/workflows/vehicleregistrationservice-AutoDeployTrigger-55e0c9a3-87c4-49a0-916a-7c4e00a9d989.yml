@@ -59,6 +59,6 @@ jobs:
           inlineScript: |
             echo "Installing containerapp extension"
             az provider register --namespace Microsoft.Web
-            az extension add --source https://workerappscliextension.blob.core.windows.net/azure-cli-extension/containerapp-0.1.12-py2.py3-none-any.whl --yes
+            az extension add --source https://workerappscliextension.blob.core.windows.net/azure-cli-extension/containerapp-0.2.0-py2.py3-none-any.whl --yes
             echo "Starting Deploying"
             az containerapp update -n vehicleregistrationservice -g dapr-workshop --enable-dapr true --dapr-app-port 6002 --dapr-app-id vehicleregistrationservice -i daprworkshopreg.azurecr.io/vehicleregistrationservice:${{ github.sha }} --registry-login-server daprworkshopreg.azurecr.io --registry-username  ${{ secrets.REGISTRY_USERNAME }} --registry-password ${{ secrets.REGISTRY_PASSWORD }} --debug
