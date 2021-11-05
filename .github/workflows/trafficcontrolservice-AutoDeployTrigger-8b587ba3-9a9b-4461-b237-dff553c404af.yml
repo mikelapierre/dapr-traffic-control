@@ -4,11 +4,11 @@ name: Trigger auto deployment for containerapps
 on:
   # Automatically trigger it when detected changes in repo
   push:
-    branches: 
-      [ master ]
+    branches:
+      - master
     paths:
-      [ 'src/TrafficControlService/**' ]
-    
+      - src/TrafficControlService/**
+      
   # Allow mannually trigger 
   workflow_dispatch:      
 
