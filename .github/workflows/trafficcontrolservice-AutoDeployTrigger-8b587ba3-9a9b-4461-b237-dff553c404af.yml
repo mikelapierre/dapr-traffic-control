@@ -7,7 +7,7 @@ on:
     branches: 
       [ master ]
     paths:
-       - master/src/TrafficControlService/**
+       - src/TrafficControlService/**
     
   # Allow mannually trigger 
   workflow_dispatch:      
