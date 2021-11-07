@@ -1,0 +1,6 @@
+- name: pubsub
+  type: pubsub.azure.servicebus
+  version: v1
+  metadata:
+  - name: connectionString
+    secretRef: "servicebus-connectionstring"
