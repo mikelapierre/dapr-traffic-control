@@ -11,4 +11,4 @@
   - name: storageAccountKey    
     secretRef: "storage-key"
   - name: storageContainerName  
-    value: "eventhub-checkpoint"
+    value: "exitcam-checkpoint"
