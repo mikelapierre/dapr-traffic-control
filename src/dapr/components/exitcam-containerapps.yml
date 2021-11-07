@@ -1,0 +1,14 @@
+- name: exitcam
+  type: bindings.azure.eventhubs
+  version: v1
+  metadata:
+  - name: connectionString
+    secretRef: "exitcam-connectionstring"
+  - name: consumerGroup        
+    value: "group1"
+  - name: storageAccountName    
+    value: "mldaprworkshopstorage"
+  - name: storageAccountKey    
+    secretRef: "storage-key"
+  - name: storageContainerName  
+    value: "eventhub-checkpoint"
