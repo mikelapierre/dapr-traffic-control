@@ -1,0 +1,14 @@
+- name: entrycam
+  type: bindings.azure.eventhubs
+  version: v1
+  metadata:
+  - name: connectionString
+    secretRef: "entrycam-connectionstring"
+  - name: consumerGroup        
+    value: "$Default"
+  - name: storageAccountName    
+    value: "mldaprworkshopstorage"
+  - name: storageAccountKey    
+    secretRef: "storage-key"
+  - name: storageContainerName  
+    value: "entrycam-checkpoint"
