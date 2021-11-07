@@ -1,4 +1,4 @@
-name: Trigger auto deployment for containerapps
+name: VehicleRegistrationService
 
 # When this action will be executed
 on:
