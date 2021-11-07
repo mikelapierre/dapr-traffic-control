@@ -14,7 +14,7 @@ namespace Simulation
             for (var i = 0; i < lanes; i++)
             {
                 int camNumber = i + 1;
-                var trafficControlService = new MqttTrafficControlService(camNumber);
+                var trafficControlService = new EventHubTrafficControlService(camNumber);
                 cameras[i] = new CameraSimulation(camNumber, trafficControlService);
             }
             Parallel.ForEach(cameras, cam => cam.Start());
