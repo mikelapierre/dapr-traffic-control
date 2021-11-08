@@ -49,6 +49,7 @@ namespace VehicleRegistrationService
             {
                 endpoints.MapControllers();
             });
+            
         }
     }
 }
