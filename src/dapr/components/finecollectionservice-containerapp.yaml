@@ -8,5 +8,4 @@
 - name: trafficcontrol-secrets
   type: envvar-secret-store
   version: v1
-  metadata:
-  - name: ""
+  metadata: []
