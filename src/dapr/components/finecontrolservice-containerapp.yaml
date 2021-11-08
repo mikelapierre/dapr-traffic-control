@@ -4,3 +4,7 @@
   metadata:
   - name: connectionString
     secretRef: "servicebus-connectionstring"
+
+- name: trafficcontrol-secrets
+  type: envvar-secret-store
+  version: v1
