@@ -57,5 +57,6 @@ namespace FineCollectionService
                 endpoints.MapControllers();
             });
         }   
+        
     }
 }
