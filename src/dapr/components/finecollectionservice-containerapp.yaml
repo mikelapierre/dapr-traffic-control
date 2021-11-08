@@ -9,3 +9,4 @@
   type: envvar-secret-store
   version: v1
   metadata:
+  - name: ""
