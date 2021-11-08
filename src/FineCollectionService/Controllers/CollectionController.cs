@@ -32,20 +32,20 @@ namespace FineCollectionService.Controllers
             // set finecalculator component license-key
             if (_fineCalculatorLicenseKey == null)
             {
-                bool runningInK8s = Convert.ToBoolean(Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") ?? "false");
-                var metadata = new Dictionary<string, string> { { "namespace", "dapr-trafficcontrol" } };
-                if (runningInK8s)
-                {
-                    var k8sSecrets = daprClient.GetSecretAsync(
-                        "kubernetes", "trafficcontrol-secrets", metadata).Result;
-                    _fineCalculatorLicenseKey = k8sSecrets["finecalculator.licensekey"];
-                }
-                else
-                {
+                // bool runningInK8s = Convert.ToBoolean(Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") ?? "false");
+                // var metadata = new Dictionary<string, string> { { "namespace", "dapr-trafficcontrol" } };
+                // if (runningInK8s)
+                // {
+                //     var k8sSecrets = daprClient.GetSecretAsync(
+                //         "kubernetes", "trafficcontrol-secrets", metadata).Result;
+                //     _fineCalculatorLicenseKey = k8sSecrets["finecalculator.licensekey"];
+                // }
+                // else
+                // {
                     var secrets = daprClient.GetSecretAsync(
                         "trafficcontrol-secrets", "finecalculator-licensekey").Result;
                     _fineCalculatorLicenseKey = secrets["finecalculator-licensekey"];
-                }
+                // }
             }
         }
 
