@@ -42,10 +42,11 @@ namespace FineCollectionService.Controllers
                 // }
                 // else
                 // {
-                    var secrets = daprClient.GetSecretAsync(
-                        "trafficcontrol-secrets", "finecalculator-licensekey").Result;
-                    _fineCalculatorLicenseKey = secrets["finecalculator-licensekey"];
+                //    var secrets = daprClient.GetSecretAsync(
+                //        "trafficcontrol-secrets", "finecalculator-licensekey").Result;
+                //    _fineCalculatorLicenseKey = secrets["finecalculator-licensekey"];
                 // }
+                _fineCalculatorLicenseKey = "HX783-K2L7V-CRJ4A-5PN1G";
             }
         }
 
