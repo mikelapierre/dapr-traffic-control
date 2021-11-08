@@ -17,3 +17,18 @@
     secretRef: "keyvault-clientid"
   - name: azureClientSecret
     secretRef: "keyvault-clientsecret"
+  
+- name: sendmail
+  type: bindings.smtp
+  version: v1
+  metadata:
+  - name: host
+    value: ml-maildev.eastus.azurecontainer.io
+  - name: port
+    value: 1025
+  - name: user
+    secretRef: "smtp-user"
+  - name: password
+    secretRef: "smtp-password"
+  - name: skipTLSVerify
+    value: true
