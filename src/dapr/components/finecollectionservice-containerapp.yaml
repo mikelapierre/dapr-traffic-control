@@ -6,6 +6,14 @@
     secretRef: "servicebus-connectionstring"
 
 - name: trafficcontrol-secrets
-  type: envvar-secret-store
+  type: secretstores.azure.keyvault
   version: v1
-  metadata: []
+  metadata:
+  - name: vaultName
+    value: "dapr-workshop"
+  - name: azureTenantId
+    secretRef: "keyvault-tenantid"
+  - name: azureClientId
+    secretRef: "keyvault-clientid"
+  - name: azureClientSecret
+    secretRef: "keyvault-clientsecret"
