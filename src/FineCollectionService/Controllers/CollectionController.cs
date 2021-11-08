@@ -43,8 +43,8 @@ namespace FineCollectionService.Controllers
                 else
                 {
                     var secrets = daprClient.GetSecretAsync(
-                        "trafficcontrol-secrets", "finecalculator.licensekey", metadata).Result;
-                    _fineCalculatorLicenseKey = secrets["finecalculator.licensekey"];
+                        "trafficcontrol-secrets", "finecalculator-licensekey").Result;
+                    _fineCalculatorLicenseKey = secrets["finecalculator-licensekey"];
                 }
             }
         }
