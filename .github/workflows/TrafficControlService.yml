@@ -52,12 +52,8 @@ jobs:
           path: master
 
       - name: Generate revision suffix
-        uses: 2428392/gh-truncate-string-action@v1
-        id: revisionSuffix
-        with:
-          stringToTruncate: ${{ github.sha }}
-          maxLength: 7          
-
+        run: REVISION_SUFFIX=`echo "${{ github.sha }}" | cut -c 1-7`
+        
       - name: Replace tokens in yaml file
         uses: cschleiden/replace-tokens@v1
         with:
@@ -72,7 +68,7 @@ jobs:
           storageaccount-name: mldaprworkshopstorage
           storageaccount-key: ${{ secrets.STORAGEACCOUNT_KEY }}
           image-tag: ${{ github.sha }}
-          revision-suffix: ${{ steps.revisionSuffix.outputs.string }}
+          revision-suffix: $REVISION_SUFFIX
     
       - name: Azure Login
         uses: azure/login@v1
