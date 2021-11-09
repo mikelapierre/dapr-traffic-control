@@ -57,7 +57,7 @@ jobs:
       - name: Replace tokens in yaml file
         uses: cschleiden/replace-tokens@v1
         with:
-          files: "[ ./master/src/containerapps/trafficcontrolservice.yaml ]"
+          files: "[ /master/src/containerapps/trafficcontrolservice.yaml ]"
         env: 
           registry-server: daprworkshopreg.azurecr.io
           registry-username: ${{ secrets.REGISTRY_USERNAME }}
@@ -68,7 +68,7 @@ jobs:
           storageaccount-name: mldaprworkshopstorage
           storageaccount-key: ${{ secrets.STORAGEACCOUNT_KEY }}
           image-tag: ${{ github.sha }}
-          revision-suffix: $REVISION_SUFFIX
+          revision-suffix: ${{ env.REVISION_SUFFIX }}
     
       - name: Azure Login
         uses: azure/login@v1
