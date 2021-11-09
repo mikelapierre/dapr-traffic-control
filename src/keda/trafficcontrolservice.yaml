@@ -1,4 +1,5 @@
 - name: entrycam-eventhub
+  type: custom
   custom:
     type: azure-eventhub
     metadata:
