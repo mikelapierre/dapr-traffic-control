@@ -1,0 +1,83 @@
+configuration:
+  activeRevisionsMode: Multiple
+  ingress:
+  registries:
+  - passwordSecretRef: registry-password
+    server: #{registry-server}#
+    username: #{registry-username}#
+  secrets:
+  - name: registry-password
+    value: #{registry-password}
+  - name: entrycam-connectionstring
+    value: #{entrycam-connectionstring}#
+  - name: exitcam-connectionstring
+    value: #{exitcam-connectionstring}#
+  - name: servicebus-connectionstring
+    value: #{servicebus-connectionstring}#
+  - name: storageaccount-key
+    value: #{storageaccount-key}#
+template:
+  containers:
+  - args:
+    command:
+    env:
+    image: #{registry-server}#/trafficcontrolservice:#{image-tag}#
+    name: trafficcontrolservice
+    resources:
+      cpu: 0.25
+      memory: 0.5Gi
+  dapr:
+    appId: trafficcontrolservice
+    appPort: 6000
+    components:
+    - metadata:
+      - name: connectionString
+        secretRef: entrycam-connectionstring
+      - name: consumerGroup
+        value: "$Default"
+      - name: storageAccountName
+        value: #{storageaccount-name}#
+      - name: storageAccountKey
+        secretRef: storageaccount-key
+      - name: storageContainerName
+        value: entrycam-checkpoint
+      name: entrycam
+      type: bindings.azure.eventhubs
+      version: v1
+    - metadata:
+      - name: connectionString
+        secretRef: exitcam-connectionstring
+      - name: consumerGroup
+        value: "$Default"
+      - name: storageAccountName
+        value: #{storageaccount-name}#
+      - name: storageAccountKey
+        secretRef: storageaccount-key
+      - name: storageContainerName
+        value: exitcam-checkpoint
+      name: exitcam
+      type: bindings.azure.eventhubs
+      version: v1
+    - metadata:
+      - name: accountName
+        value: #{storageaccount-name}#
+      - name: accountKey
+        secretRef: storageaccount-key
+      - name: containerName
+        value: dapr-state
+      name: statestore
+      type: state.azure.blobstorage
+      version: v1
+    - metadata:
+      - name: connectionString
+        secretRef: servicebus-connectionstring
+      name: pubsub
+      type: pubsub.azure.servicebus
+      version: v1
+    enabled: true
+  revisionSuffix: #{revision-suffix}#
+  scale:
+    maxReplicas: 5
+    minReplicas: 1
+    rules:
+type: Microsoft.Web/containerApps

@@ -49,7 +49,30 @@ jobs:
       - name: Checkout to the branch
         uses: actions/checkout@v2
         with:
-          path: master    
+          path: master
+
+      - name: Generate revision suffix
+        uses: 2428392/gh-truncate-string-action@v1
+        id: revisionSuffix
+        with:
+          stringToTruncate: ${{ github.sha }}
+          maxLength: 7          
+
+      - name: Replace tokens in yaml file
+        uses: cschleiden/replace-tokens@v1
+        with:
+          files: [ ./master/src/containerapps/trafficcontrolservice.yaml ]
+        env: 
+          registry-server: daprworkshopreg.azurecr.io
+          registry-username: ${{ secrets.REGISTRY_USERNAME }}
+          registry-password: ${{ secrets.REGISTRY_PASSWORD }}
+          entrycam-connectionstring: ${{ secrets.ENTRYCAM_CONNECTIONSTRING }}
+          exitcam-connectionstring: ${{ secrets.EXITCAM_CONNECTIONSTRING }}
+          servicebus-connectionstring: ${{ secrets.SERVICEBUS_CONNECTIONSTRING }}
+          storageaccount-name: mldaprworkshopstorage
+          storageaccount-key: ${{ secrets.STORAGEACCOUNT_KEY }}
+          image-tag: ${{ github.sha }}
+          revision-suffix: ${{ steps.revisionSuffix.outputs.string }}
     
       - name: Azure Login
         uses: azure/login@v1
@@ -65,4 +88,4 @@ jobs:
             az provider register --namespace Microsoft.Web
             az extension add --source https://workerappscliextension.blob.core.windows.net/azure-cli-extension/containerapp-0.2.0-py2.py3-none-any.whl --yes
             echo "Starting Deploying"
-            az containerapp update -n trafficcontrolservice -g dapr-workshop --enable-dapr true --dapr-app-port 6000 --dapr-app-id trafficcontrolservice --dapr-components ./master/src/dapr/components/trafficcontrolservice-containerapp.yaml -i daprworkshopreg.azurecr.io/trafficcontrolservice:${{ github.sha }} --registry-login-server daprworkshopreg.azurecr.io --registry-username  ${{ secrets.REGISTRY_USERNAME }} --registry-password ${{ secrets.REGISTRY_PASSWORD }} --scale-rules ./master/src/keda/trafficcontrolservice.yaml --debug
+            az containerapp update -n trafficcontrolservice --yaml ./master/src/containerapps/trafficcontrolservice.yaml --debug
