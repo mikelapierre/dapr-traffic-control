@@ -59,9 +59,9 @@ jobs:
       - name: Generate variables
         run: |           
            if "${{ github.event.inputs.action }}" == ""; then
-             echo ACTION=update >> $GITHUB_ENV 
+             echo "ACTION=update" >> $GITHUB_ENV 
            else
-             echo ACTION=${{ github.event.inputs.action }} >> $GITHUB_ENV 
+             echo "ACTION=${{ github.event.inputs.action }}" >> $GITHUB_ENV 
            fi
            echo REVISION_SUFFIX=`echo "${{ github.sha }}" | cut -c 1-7` >> $GITHUB_ENV
         
