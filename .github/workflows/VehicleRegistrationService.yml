@@ -56,8 +56,14 @@ jobs:
         with:
           path: master
 
-      - name: Generate revision suffix
-        run: echo REVISION_SUFFIX=`echo "${{ github.sha }}" | cut -c 1-7` >> $GITHUB_ENV      
+      - name: Generate variables
+        run: |           
+           if "${{ github.event.inputs.action }}" == ""; then
+             echo ACTION=update >> $GITHUB_ENV 
+           else
+             echo ACTION=${{ github.event.inputs.action }} >> $GITHUB_ENV 
+           fi
+           echo REVISION_SUFFIX=`echo "${{ github.sha }}" | cut -c 1-7` >> $GITHUB_ENV
         
       - name: Replace tokens in yaml file
         uses: cschleiden/replace-tokens@v1
@@ -88,4 +94,4 @@ jobs:
             az provider register --namespace Microsoft.Web
             az extension add --source https://workerappscliextension.blob.core.windows.net/azure-cli-extension/containerapp-0.2.0-py2.py3-none-any.whl --yes
             echo "Starting Deploying"
-            az containerapp ${{ github.event.inputs.action }} -n vehicleregistrationservice -g dapr-workshop --yaml ./master/src/containerapps/vehicleregistrationservice.yaml --debug
+            az containerapp ${{ env.ACTION }} -n vehicleregistrationservice -g dapr-workshop --yaml ./master/src/containerapps/vehicleregistrationservice.yaml --debug
