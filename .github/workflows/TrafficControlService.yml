@@ -52,7 +52,7 @@ jobs:
           path: master
 
       - name: Generate revision suffix
-        run: echo REVISION_SUFFIX=`echo "${{ github.sha }}" | cut -c 1-7` >> $GITHUB_ENV
+        run: echo REVISION_SUFFIX=`echo "${{ github.sha }}" | cut -c 1-7` >> $GITHUB_ENV      
         
       - name: Replace tokens in yaml file
         uses: cschleiden/replace-tokens@v1
@@ -70,6 +70,9 @@ jobs:
           image-tag: ${{ github.sha }}
           revision-suffix: ${{ env.REVISION_SUFFIX }}
     
+      - name: Output file
+        run: cat ./master/src/containerapps/trafficcontrolservice.yaml
+
       - name: Azure Login
         uses: azure/login@v1
         with:
