@@ -51,14 +51,30 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+      - name: Generate revision suffix
+        run: echo REVISION_SUFFIX=`echo "${{ github.sha }}" | cut -c 1-7` >> $GITHUB_ENV      
+        
+      - name: Replace tokens in yaml file
+        uses: cschleiden/replace-tokens@v1
+        with:
+          files: '["./master/src/containerapps/vehicleregistrationservice.yaml"]'
+        env: 
+          registry-server: daprworkshopreg.azurecr.io
+          registry-username: ${{ secrets.REGISTRY_USERNAME }}
+          registry-password: ${{ secrets.REGISTRY_PASSWORD }}
+          image-tag: ${{ github.sha }}          
+          revision-suffix: ${{ env.REVISION_SUFFIX }}
+    
+      - name: Output file
+        run: cat ./master/src/containerapps/vehicleregistrationservice.yaml  
 
       - name: Deploy to containerapp
         uses: azure/CLI@v1
         with:
-          azcliversion: 2.20.0
+          azcliversion: latest
           inlineScript: |
             echo "Installing containerapp extension"
             az provider register --namespace Microsoft.Web
             az extension add --source https://workerappscliextension.blob.core.windows.net/azure-cli-extension/containerapp-0.2.0-py2.py3-none-any.whl --yes
             echo "Starting Deploying"
-            az containerapp update -n vehicleregistrationservice -g dapr-workshop --enable-dapr true --dapr-app-port 6002 --dapr-app-id vehicleregistrationservice -i daprworkshopreg.azurecr.io/vehicleregistrationservice:${{ github.sha }} --registry-login-server daprworkshopreg.azurecr.io --registry-username  ${{ secrets.REGISTRY_USERNAME }} --registry-password ${{ secrets.REGISTRY_PASSWORD }} --debug
+            az containerapp update -n vehicleregistrationservice -g dapr-workshop --yaml ./master/src/containerapps/vehicleregistrationservice.yaml --debug

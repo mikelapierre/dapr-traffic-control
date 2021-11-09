@@ -1,0 +1,25 @@
+configuration:
+  activeRevisionsMode: Multiple
+  registries:
+  - passwordSecretRef: registry-password
+    server: #{registry-server}#
+    username: #{registry-username}#
+  secrets:
+  - name: registry-password
+    value: #{registry-password}#
+template:
+  containers:
+    image: #{registry-server}#/vehicleregistrationservice:#{image-tag}#
+    name: vehicleregistrationservice
+    resources:
+      cpu: 0.25
+      memory: .5Gi
+  dapr:
+    appId: vehicleregistrationservice
+    appPort: 6002
+    enabled: true
+  revisionSuffix: #{revision-suffix}#
+  scale:
+    maxReplicas: 5
+    minReplicas: 1
+type: Microsoft.Web/containerApps
