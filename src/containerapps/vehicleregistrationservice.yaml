@@ -9,7 +9,7 @@ configuration:
     value: #{registry-password}#
 template:
   containers:
-    image: #{registry-server}#/vehicleregistrationservice:#{image-tag}#
+  - image: #{registry-server}#/vehicleregistrationservice:#{image-tag}#
     name: vehicleregistrationservice
     resources:
       cpu: 0.25
