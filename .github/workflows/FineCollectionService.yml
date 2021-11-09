@@ -35,8 +35,7 @@ jobs:
         with:
           registry: daprworkshopreg.azurecr.io
           username: ${{ secrets.REGISTRY_USERNAME }}
-          password: ${{ secrets.REGISTRY_PASSWORD }}
-          environment-id: /subscriptions/a14336fa-6d98-43b5-8700-12f7edca1cde/resourceGroups/dapr-workshop/providers/Microsoft.Web/kubeEnvironments/dapr-workshop-envir-ai
+          password: ${{ secrets.REGISTRY_PASSWORD }}          
 
       - name: Build and push container image to registry
         uses: docker/build-push-action@v2
@@ -75,6 +74,7 @@ jobs:
           registry-server: daprworkshopreg.azurecr.io
           registry-username: ${{ secrets.REGISTRY_USERNAME }}
           registry-password: ${{ secrets.REGISTRY_PASSWORD }}
+          environment-id: /subscriptions/a14336fa-6d98-43b5-8700-12f7edca1cde/resourceGroups/dapr-workshop/providers/Microsoft.Web/kubeEnvironments/dapr-workshop-envir-ai
           servicebus-connectionstring: ${{ secrets.SERVICEBUS_CONNECTIONSTRING }}
           finecalculator-licensekey: HX783-K2L7V-CRJ4A-5PN1G
           smtp-host: ml-maildev.eastus.azurecontainer.io
