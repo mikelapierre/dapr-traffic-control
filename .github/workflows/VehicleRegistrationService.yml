@@ -10,7 +10,12 @@ on:
       - src/VehicleRegistrationService/**      
 
   # Allow mannually trigger 
-  workflow_dispatch:      
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Action (create or update)'
+        required: true
+        default: 'update'
 
 jobs:
   build:
@@ -46,10 +51,10 @@ jobs:
     needs: build
     
     steps:
-      - name: Azure Login
-        uses: azure/login@v1
+      - name: Checkout to the branch
+        uses: actions/checkout@v2
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          path: master
 
       - name: Generate revision suffix
         run: echo REVISION_SUFFIX=`echo "${{ github.sha }}" | cut -c 1-7` >> $GITHUB_ENV      
@@ -68,6 +73,11 @@ jobs:
       - name: Output file
         run: cat ./master/src/containerapps/vehicleregistrationservice.yaml  
 
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}        
+
       - name: Deploy to containerapp
         uses: azure/CLI@v1
         with:
@@ -77,4 +87,4 @@ jobs:
             az provider register --namespace Microsoft.Web
             az extension add --source https://workerappscliextension.blob.core.windows.net/azure-cli-extension/containerapp-0.2.0-py2.py3-none-any.whl --yes
             echo "Starting Deploying"
-            az containerapp update -n vehicleregistrationservice -g dapr-workshop --yaml ./master/src/containerapps/vehicleregistrationservice.yaml --debug
+            az containerapp ${{ github.event.inputs.action }} -n vehicleregistrationservice -g dapr-workshop --yaml ./master/src/containerapps/vehicleregistrationservice.yaml --debug
