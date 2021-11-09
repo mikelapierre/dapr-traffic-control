@@ -74,7 +74,7 @@ jobs:
           registry-server: daprworkshopreg.azurecr.io
           registry-username: ${{ secrets.REGISTRY_USERNAME }}
           registry-password: ${{ secrets.REGISTRY_PASSWORD }}
-          environment-id: /subscriptions/a14336fa-6d98-43b5-8700-12f7edca1cde/resourceGroups/dapr-workshop/providers/Microsoft.Web/kubeEnvironments/dapr-workshop
+          environment-id: /subscriptions/a14336fa-6d98-43b5-8700-12f7edca1cde/resourceGroups/dapr-workshop/providers/Microsoft.Web/kubeEnvironments/dapr-workshop-envir-ai
           entrycam-connectionstring: ${{ secrets.ENTRYCAM_CONNECTIONSTRING }}
           exitcam-connectionstring: ${{ secrets.EXITCAM_CONNECTIONSTRING }}
           servicebus-connectionstring: ${{ secrets.SERVICEBUS_CONNECTIONSTRING }}

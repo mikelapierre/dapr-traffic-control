@@ -36,7 +36,7 @@ jobs:
           registry: daprworkshopreg.azurecr.io
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
-          environment-id: /subscriptions/a14336fa-6d98-43b5-8700-12f7edca1cde/resourceGroups/dapr-workshop/providers/Microsoft.Web/kubeEnvironments/dapr-workshop
+          environment-id: /subscriptions/a14336fa-6d98-43b5-8700-12f7edca1cde/resourceGroups/dapr-workshop/providers/Microsoft.Web/kubeEnvironments/dapr-workshop-envir-ai
 
       - name: Build and push container image to registry
         uses: docker/build-push-action@v2
