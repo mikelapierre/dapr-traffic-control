@@ -33,7 +33,7 @@ template:
     - metadata:
       - name: connectionString
         secretRef: servicebus-connectionstring
-        name: consumerID
+      - name: consumerID
         value: finecollectionservice
       name: pubsub
       type: pubsub.azure.servicebus
