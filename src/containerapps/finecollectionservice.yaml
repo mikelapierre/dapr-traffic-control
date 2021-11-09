@@ -58,7 +58,7 @@ template:
     maxReplicas: 5
     minReplicas: 0
     rules:
-      custom:
+    - custom:
         auth:
         - secretRef: servicebus-connectionstring
           triggerParameter: connection
