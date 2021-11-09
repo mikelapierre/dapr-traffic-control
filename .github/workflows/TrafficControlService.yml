@@ -61,7 +61,7 @@ jobs:
       - name: Replace tokens in yaml file
         uses: cschleiden/replace-tokens@v1
         with:
-          files: [ ./master/src/containerapps/trafficcontrolservice.yaml ]
+          files: "[ ./master/src/containerapps/trafficcontrolservice.yaml ]"
         env: 
           registry-server: daprworkshopreg.azurecr.io
           registry-username: ${{ secrets.REGISTRY_USERNAME }}
