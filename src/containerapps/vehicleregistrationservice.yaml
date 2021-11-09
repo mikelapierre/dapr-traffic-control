@@ -22,5 +22,5 @@ template:
   revisionSuffix: #{revision-suffix}#
   scale:
     maxReplicas: 5
-    minReplicas: 1
+    minReplicas: 0
 type: Microsoft.Web/containerApps
