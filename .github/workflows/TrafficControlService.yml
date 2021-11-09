@@ -51,24 +51,24 @@ jobs:
         with:
           path: master
 
-      # - name: Generate revision suffix
-      #   run: echo REVISION_SUFFIX=`echo "${{ github.sha }}" | cut -c 1-7` >> $GITHUB_ENV
+      - name: Generate revision suffix
+        run: echo REVISION_SUFFIX=`echo "${{ github.sha }}" | cut -c 1-7` >> $GITHUB_ENV
         
-      # - name: Replace tokens in yaml file
-      #   uses: cschleiden/replace-tokens@v1
-      #   with:
-      #     files: '["./master/src/containerapps/trafficcontrolservice.yaml"]'
-      #   env: 
-      #     registry-server: daprworkshopreg.azurecr.io
-      #     registry-username: ${{ secrets.REGISTRY_USERNAME }}
-      #     registry-password: ${{ secrets.REGISTRY_PASSWORD }}
-      #     entrycam-connectionstring: ${{ secrets.ENTRYCAM_CONNECTIONSTRING }}
-      #     exitcam-connectionstring: ${{ secrets.EXITCAM_CONNECTIONSTRING }}
-      #     servicebus-connectionstring: ${{ secrets.SERVICEBUS_CONNECTIONSTRING }}
-      #     storageaccount-name: mldaprworkshopstorage
-      #     storageaccount-key: ${{ secrets.STORAGEACCOUNT_KEY }}
-      #     image-tag: ${{ github.sha }}
-      #     revision-suffix: ${{ env.REVISION_SUFFIX }}
+      - name: Replace tokens in yaml file
+        uses: cschleiden/replace-tokens@v1
+        with:
+          files: '["./master/src/containerapps/trafficcontrolservice.yaml"]'
+        env: 
+          registry-server: daprworkshopreg.azurecr.io
+          registry-username: ${{ secrets.REGISTRY_USERNAME }}
+          registry-password: ${{ secrets.REGISTRY_PASSWORD }}
+          entrycam-connectionstring: ${{ secrets.ENTRYCAM_CONNECTIONSTRING }}
+          exitcam-connectionstring: ${{ secrets.EXITCAM_CONNECTIONSTRING }}
+          servicebus-connectionstring: ${{ secrets.SERVICEBUS_CONNECTIONSTRING }}
+          storageaccount-name: mldaprworkshopstorage
+          storageaccount-key: ${{ secrets.STORAGEACCOUNT_KEY }}
+          image-tag: ${{ github.sha }}
+          revision-suffix: ${{ env.REVISION_SUFFIX }}
     
       - name: Azure Login
         uses: azure/login@v1
@@ -76,7 +76,7 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Deploy to containerapp
-        uses: azure/CLI@v1.0.4
+        uses: azure/CLI@v1
         with:
           azcliversion: 2.29.2
           inlineScript: |
