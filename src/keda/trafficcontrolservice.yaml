@@ -1,15 +1,15 @@
-triggers:
-- type: azure-eventhub
-  metadata:
-    connectionFromEnv: EVENTHUB_CONNECTIONSTRING_ENV_NAME
-    storageConnectionFromEnv: STORAGE_CONNECTIONSTRING_ENV_NAME
-    consumerGroup: $Default
-    unprocessedEventThreshold: '64'
-    blobContainer: 'entrycam-checkpoint'
-- type: azure-eventhub
-  metadata:
-    connectionFromEnv: EVENTHUB_CONNECTIONSTRING_ENV_NAME
-    storageConnectionFromEnv: STORAGE_CONNECTIONSTRING_ENV_NAME
-    consumerGroup: $Default
-    unprocessedEventThreshold: '64'
-    blobContainer: 'exitcam-checkpoint'
+[
+  {
+    "name": "entrycam-eventhub",
+    "custom": {
+      "type": "azure-eventhub",
+      "metadata": {
+        "connectionFromEnv": "EVENTHUB_CONNECTIONSTRING_ENV_NAME",
+        "storageConnectionFromEnv": "STORAGE_CONNECTIONSTRING_ENV_NAME",
+        "consumerGroup": "$Default",
+        "unprocessedEventThreshold": "64",
+        "blobContainer": "entrycam-checkpoint"
+      }
+    }
+  }
+]
