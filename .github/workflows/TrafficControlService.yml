@@ -76,9 +76,9 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Deploy to containerapp
-        uses: azure/CLI@v1
+        uses: azure/CLI@v1.0.4
         with:
-          azcliversion: 2.20.0
+          azcliversion: 2.29.2
           inlineScript: |
             echo "Installing containerapp extension"
             az provider register --namespace Microsoft.Web
