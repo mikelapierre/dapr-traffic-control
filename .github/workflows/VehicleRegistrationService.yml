@@ -58,7 +58,8 @@ jobs:
 
       - name: Generate variables
         run: |           
-           if "${{ github.event.inputs.action }}" == ""; then
+           if ["${{ github.event.inputs.action }}" == ""]
+           then
              echo "ACTION=update" >> $GITHUB_ENV 
            else
              echo "ACTION=${{ github.event.inputs.action }}" >> $GITHUB_ENV 
