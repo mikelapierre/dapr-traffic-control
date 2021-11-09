@@ -50,20 +50,42 @@ jobs:
         uses: actions/checkout@v2
         with:
           path: master
+
+      - name: Generate revision suffix
+        run: echo REVISION_SUFFIX=`echo "${{ github.sha }}" | cut -c 1-7` >> $GITHUB_ENV      
+        
+      - name: Replace tokens in yaml file
+        uses: cschleiden/replace-tokens@v1
+        with:
+          files: '["./master/src/containerapps/finecollectionservice.yaml"]'
+        env: 
+          registry-server: daprworkshopreg.azurecr.io
+          registry-username: ${{ secrets.REGISTRY_USERNAME }}
+          registry-password: ${{ secrets.REGISTRY_PASSWORD }}
+          servicebus-connectionstring: ${{ secrets.SERVICEBUS_CONNECTIONSTRING }}
+          finecalculator-licensekey: HX783-K2L7V-CRJ4A-5PN1G
+          smtp-host: ml-maildev.eastus.azurecontainer.io
+          smtp-port: 1025
+          smtp-username: _username
+          smtp-password: _password
+          image-tag: ${{ github.sha }}          
+          revision-suffix: ${{ env.REVISION_SUFFIX }}
+    
+      - name: Output file
+        run: cat ./master/src/containerapps/finecollectionservice.yaml          
     
       - name: Azure Login
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-
       - name: Deploy to containerapp
         uses: azure/CLI@v1
         with:
-          azcliversion: 2.20.0
+          azcliversion: latest
           inlineScript: |
             echo "Installing containerapp extension"
             az provider register --namespace Microsoft.Web
             az extension add --source https://workerappscliextension.blob.core.windows.net/azure-cli-extension/containerapp-0.2.0-py2.py3-none-any.whl --yes
             echo "Starting Deploying"
-            az containerapp update -n finecollectionservice -g dapr-workshop --enable-dapr true --dapr-app-port 6001 --dapr-app-id finecollectionservice --dapr-components ./master/src/dapr/components/finecollectionservice-containerapp.yaml -i daprworkshopreg.azurecr.io/finecollectionservice:${{ github.sha }} --registry-login-server daprworkshopreg.azurecr.io --registry-username  ${{ secrets.REGISTRY_USERNAME }} --registry-password ${{ secrets.REGISTRY_PASSWORD }} --environment-variables "finecalculator-licensekey=secretref:finecalculator-licensekey" --debug
+            az containerapp update -n finecollectionservice -g dapr-workshop --yaml ./master/src/containerapps/finecollectionservice.yaml --debug

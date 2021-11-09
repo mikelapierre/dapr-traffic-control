@@ -1,0 +1,71 @@
+configuration:
+  activeRevisionsMode: Single
+  ingress:
+  registries:
+  - passwordSecretRef: registry-password
+    server: #{registry-server}#
+    username: #{registry-username}#
+  secrets:
+  - name: registry-password
+    value: #{registry-password}#
+  - name: finecalculator-licensekey
+    value: #{finecalculator-licensekey}#
+  - name: servicebus-connectionstring
+    value: #{servicebus-connectionstring}#
+  - name: smtp-username
+    value: #{smtp-username}#    
+  - name: smtp-password
+    value: #{smtp-password}#
+template:
+  containers:
+  - args:
+    command:
+    env:
+    - name: finecalculator-licensekey
+      secretRef: finecalculator-licensekey
+    image: #{registry-server}#/finecollectionservice:#{image-tag}#
+    name: finecollectionservice
+    resources:
+      cpu: 0.25
+      memory: .5Gi
+  dapr:
+    appId: finecollectionservice
+    appPort: 6001
+    components:
+    - metadata:
+      - name: connectionString
+        secretRef: servicebus-connectionstring
+      name: pubsub
+      type: pubsub.azure.servicebus
+      version: v1
+    - metadata:
+      - name: host
+        value: #{smtp-host}#
+      - name: port
+        value: #{smtp-port}#
+      - name: user
+        secretRef: smtp-username
+      - name: password
+        secretRef: smtp-password
+      - name: skipTLSVerify
+        value: true
+      name: sendmail
+      type: bindings.smtp
+      version: v1
+    enabled: true
+  revisionSuffix: #{revision-suffix}#
+  scale:
+    maxReplicas: 5
+    minReplicas: 0
+    rules:
+      custom:
+        auth:
+        - secretRef: servicebus-connectionstring
+          triggerParameter: connection
+        metadata:
+          messageCount: 5
+          subscriptionName: finecollectionservice--#{revision-suffix}#-finecollectionservice
+          topicName: speedingviolations
+        type: azure-servicebus
+      name: service-bus-autoscale
+type: Microsoft.Web/containerApps
