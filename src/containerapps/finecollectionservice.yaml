@@ -1,6 +1,5 @@
 configuration:
   activeRevisionsMode: Single
-  ingress:
   registries:
   - passwordSecretRef: registry-password
     server: #{registry-server}#
@@ -16,11 +15,10 @@ configuration:
     value: #{smtp-username}#    
   - name: smtp-password
     value: #{smtp-password}#
+kubeEnvironmentId: #{environment-id}#    
 template:
   containers:
-  - args:
-    command:
-    env:
+  - env:
     - name: finecalculator-licensekey
       secretRef: finecalculator-licensekey
     image: #{registry-server}#/finecollectionservice:#{image-tag}#

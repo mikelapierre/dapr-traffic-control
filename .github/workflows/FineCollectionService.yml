@@ -11,6 +11,11 @@ on:
 
   # Allow mannually trigger 
   workflow_dispatch:      
+    inputs:
+      action:
+        description: 'Action (create or update)'
+        required: true
+        default: 'update'  
 
 jobs:
   build:
@@ -31,6 +36,7 @@ jobs:
           registry: daprworkshopreg.azurecr.io
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
+          environment-id: /subscriptions/a14336fa-6d98-43b5-8700-12f7edca1cde/resourceGroups/dapr-workshop/providers/Microsoft.Web/kubeEnvironments/dapr-workshop
 
       - name: Build and push container image to registry
         uses: docker/build-push-action@v2
@@ -51,8 +57,15 @@ jobs:
         with:
           path: master
 
-      - name: Generate revision suffix
-        run: echo REVISION_SUFFIX=`echo "${{ github.sha }}" | cut -c 1-7` >> $GITHUB_ENV      
+      - name: Generate variables
+        run: |           
+           if ["${{ github.event.inputs.action }}" == ""]
+           then
+             echo "ACTION=update" >> $GITHUB_ENV 
+           else
+             echo "ACTION=${{ github.event.inputs.action }}" >> $GITHUB_ENV 
+           fi
+           echo REVISION_SUFFIX=`echo "${{ github.sha }}" | cut -c 1-7` >> $GITHUB_ENV
         
       - name: Replace tokens in yaml file
         uses: cschleiden/replace-tokens@v1
@@ -88,4 +101,4 @@ jobs:
             az provider register --namespace Microsoft.Web
             az extension add --source https://workerappscliextension.blob.core.windows.net/azure-cli-extension/containerapp-0.2.0-py2.py3-none-any.whl --yes
             echo "Starting Deploying"
-            az containerapp update -n finecollectionservice -g dapr-workshop --yaml ./master/src/containerapps/finecollectionservice.yaml --debug
+            az containerapp ${{ env.ACTION }} -n finecollectionservice -g dapr-workshop --yaml ./master/src/containerapps/finecollectionservice.yaml --debug

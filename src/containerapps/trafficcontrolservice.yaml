@@ -1,6 +1,5 @@
 configuration:
   activeRevisionsMode: Multiple
-  ingress:
   registries:
   - passwordSecretRef: registry-password
     server: #{registry-server}#
@@ -16,12 +15,10 @@ configuration:
     value: #{servicebus-connectionstring}#
   - name: storageaccount-key
     value: #{storageaccount-key}#
+kubeEnvironmentId: #{environment-id}#    
 template:
   containers:
-  - args:
-    command:
-    env:
-    image: #{registry-server}#/trafficcontrolservice:#{image-tag}#
+  - image: #{registry-server}#/trafficcontrolservice:#{image-tag}#
     name: trafficcontrolservice
     resources:
       cpu: 0.25
@@ -79,5 +76,4 @@ template:
   scale:
     maxReplicas: 5
     minReplicas: 1
-    rules:
 type: Microsoft.Web/containerApps

@@ -10,7 +10,12 @@ on:
       - src/TrafficControlService/**
       
   # Allow mannually trigger 
-  workflow_dispatch:      
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Action (create or update)'
+        required: true
+        default: 'update'  
 
 jobs:
   build:
@@ -51,8 +56,15 @@ jobs:
         with:
           path: master
 
-      - name: Generate revision suffix
-        run: echo REVISION_SUFFIX=`echo "${{ github.sha }}" | cut -c 1-7` >> $GITHUB_ENV      
+      - name: Generate variables
+        run: |           
+           if ["${{ github.event.inputs.action }}" == ""]
+           then
+             echo "ACTION=update" >> $GITHUB_ENV 
+           else
+             echo "ACTION=${{ github.event.inputs.action }}" >> $GITHUB_ENV 
+           fi
+           echo REVISION_SUFFIX=`echo "${{ github.sha }}" | cut -c 1-7` >> $GITHUB_ENV    
         
       - name: Replace tokens in yaml file
         uses: cschleiden/replace-tokens@v1
@@ -62,6 +74,7 @@ jobs:
           registry-server: daprworkshopreg.azurecr.io
           registry-username: ${{ secrets.REGISTRY_USERNAME }}
           registry-password: ${{ secrets.REGISTRY_PASSWORD }}
+          environment-id: /subscriptions/a14336fa-6d98-43b5-8700-12f7edca1cde/resourceGroups/dapr-workshop/providers/Microsoft.Web/kubeEnvironments/dapr-workshop
           entrycam-connectionstring: ${{ secrets.ENTRYCAM_CONNECTIONSTRING }}
           exitcam-connectionstring: ${{ secrets.EXITCAM_CONNECTIONSTRING }}
           servicebus-connectionstring: ${{ secrets.SERVICEBUS_CONNECTIONSTRING }}
@@ -87,4 +100,4 @@ jobs:
             az provider register --namespace Microsoft.Web
             az extension add --source https://workerappscliextension.blob.core.windows.net/azure-cli-extension/containerapp-0.2.0-py2.py3-none-any.whl --yes
             echo "Starting Deploying"
-            az containerapp update -n trafficcontrolservice -g dapr-workshop --yaml ./master/src/containerapps/trafficcontrolservice.yaml --debug
+            az containerapp ${{ env.ACTION }} -n trafficcontrolservice -g dapr-workshop --yaml ./master/src/containerapps/trafficcontrolservice.yaml --debug
