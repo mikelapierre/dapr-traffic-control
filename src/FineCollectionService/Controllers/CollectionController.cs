@@ -46,7 +46,7 @@ namespace FineCollectionService.Controllers
                 //        "trafficcontrol-secrets", "finecalculator-licensekey").Result;
                 //    _fineCalculatorLicenseKey = secrets["finecalculator-licensekey"];
                 // }
-                _fineCalculatorLicenseKey = "HX783-K2L7V-CRJ4A-5PN1G";
+                _fineCalculatorLicenseKey = Environment.GetEnvironmentVariable("finecalculator-licensekey");
             }
         }
 
