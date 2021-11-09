@@ -14,6 +14,7 @@ namespace VehicleRegistrationService
         {
             Configuration = configuration;
         }
+        
 
         public IConfiguration Configuration { get; }
 
