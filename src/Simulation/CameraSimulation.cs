@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Simulation.Events;
 using Simulation.Proxies;
 
@@ -14,16 +15,18 @@ namespace Simulation
         private int _maxEntryDelayInMS = 5000;
         private int _minExitDelayInS = 4;
         private int _maxExitDelayInS = 10;
+        private ILogger _logger;
 
-        public CameraSimulation(int camNumber, ITrafficControlService trafficControlService)
+        public CameraSimulation(int camNumber, ITrafficControlService trafficControlService, ILogger logger)
         {
             _camNumber = camNumber;
             _trafficControlService = trafficControlService;
+            _logger = logger;
         }
 
         public Task Start()
         {
-            Console.WriteLine($"Start camera {_camNumber} simulation.");
+            Log($"Start camera {_camNumber} simulation.");
 
             // initialize state
             _rnd = new Random();
@@ -47,7 +50,7 @@ namespace Simulation
                             Timestamp = entryTimestamp
                         };
                         await _trafficControlService.SendVehicleEntryAsync(vehicleRegistered);
-                        Console.WriteLine($"Simulated ENTRY of vehicle with license-number {vehicleRegistered.LicenseNumber} in lane {vehicleRegistered.Lane}");
+                        Log($"Simulated ENTRY of vehicle with license-number {vehicleRegistered.LicenseNumber} in lane {vehicleRegistered.Lane}");
 
                         // simulate exit
                         TimeSpan exitDelay = TimeSpan.FromSeconds(_rnd.Next(_minExitDelayInS, _maxExitDelayInS) + _rnd.NextDouble());
@@ -55,7 +58,7 @@ namespace Simulation
                         vehicleRegistered.Timestamp = DateTime.Now;
                         vehicleRegistered.Lane = _rnd.Next(1, 4);
                         await _trafficControlService.SendVehicleExitAsync(vehicleRegistered);
-                        Console.WriteLine($"Simulated EXIT of vehicle with license-number {vehicleRegistered.LicenseNumber} in lane {vehicleRegistered.Lane}");
+                        Log($"Simulated EXIT of vehicle with license-number {vehicleRegistered.LicenseNumber} in lane {vehicleRegistered.Lane}");
                     });
                 }
                 catch (Exception ex)
@@ -112,6 +115,12 @@ namespace Simulation
                 chars[i] = _validLicenseNumberChars[_rnd.Next(_validLicenseNumberChars.Length - 1)];
             }
             return new string(chars);
+        }
+
+        private void Log(string log)
+        {            
+            _logger.LogInformation(log);
+            Console.WriteLine(log);
         }
 
         #endregion
