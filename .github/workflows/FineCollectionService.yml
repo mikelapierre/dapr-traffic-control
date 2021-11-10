@@ -77,7 +77,7 @@ jobs:
           environment-id: /subscriptions/a14336fa-6d98-43b5-8700-12f7edca1cde/resourceGroups/dapr-workshop/providers/Microsoft.Web/kubeEnvironments/dapr-workshop-envir-ai
           servicebus-connectionstring: ${{ secrets.SERVICEBUS_CONNECTIONSTRING }}
           finecalculator-licensekey: HX783-K2L7V-CRJ4A-5PN1G
-          smtp-host: ml-maildev.eastus.azurecontainer.io
+          smtp-host: maildev-d4v9d4m.eastus.azurecontainer.io
           smtp-port: 1025
           smtp-username: _username
           smtp-password: _password

@@ -22,4 +22,4 @@ jobs:
           azcliversion: latest
           inlineScript: |
             echo "Starting Deploying"
-            az container create -n maildev -g dapr-workshop --image maildev/maildev --command-line "/usr/src/app/bin/maildev -s 1025 -w 1080" --ip-address Public --ports 1025 1080 --debug
+            az container create -n maildev -g dapr-workshop --image maildev/maildev --command-line "/usr/src/app/bin/maildev -s 1025 -w 1080" --ip-address Public --ports 1025 1080 --dns-name-label maildev-d4v9d4m --debug
