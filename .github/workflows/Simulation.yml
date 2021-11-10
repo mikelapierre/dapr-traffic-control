@@ -46,20 +46,15 @@ jobs:
     needs: build
     
     steps:
-      - name: Checkout to the branch
-        uses: actions/checkout@v2
-        with:
-          path: master
-
       - name: Azure Login
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}        
 
-      - name: Deploy to containerapp
+      - name: Deploy to ACI
         uses: azure/CLI@v1
         with:
           azcliversion: latest
           inlineScript: |
             echo "Starting Deploying"
-            az container create -n simulation -g dapr-workshop --registry-login-server daprworkshopreg.azurecr.io --registry-username ${{ secrets.REGISTRY_USERNAME }} --registry-password ${{ secrets.REGISTRY_PASSWORD }} --image daprworkshopreg.azurecr.io/simulation:${{ github.sha }} --secure-environment-variables "APPINSIGHTS_INSTRUMENTATIONKEY=${{ secrets.APPINSIGHTS_INSTRUMENTATIONKEY }} EH_CONNECTIONSTRING=${{ secrets.SERVICEBUS_CONNECTIONSTRING }}" --debug
+            az container create -n simulation -g dapr-workshop --registry-login-server daprworkshopreg.azurecr.io --registry-username ${{ secrets.REGISTRY_USERNAME }} --registry-password ${{ secrets.REGISTRY_PASSWORD }} --image daprworkshopreg.azurecr.io/simulation:${{ github.sha }} --secure-environment-variables "APPINSIGHTS_INSTRUMENTATIONKEY=${{ secrets.APPINSIGHTS_INSTRUMENTATIONKEY }}" "EH_CONNECTIONSTRING=${{ secrets.SERVICEBUS_CONNECTIONSTRING }}" --debug

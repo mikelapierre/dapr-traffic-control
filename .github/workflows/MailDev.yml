@@ -1,0 +1,25 @@
+name: MailDev
+
+# When this action will be executed
+on:    
+
+  # Allow mannually trigger 
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}        
+
+      - name: Deploy to ACI
+        uses: azure/CLI@v1
+        with:
+          azcliversion: latest
+          inlineScript: |
+            echo "Starting Deploying"
+            az container create -n maildev -g dapr-workshop --image maildev/maildev --command-line "/usr/src/app/bin/maildev -s 1025 -w 1080" --ip-address Public --ports 1025 1080 --debug
