@@ -12,7 +12,7 @@ namespace Simulation
         static void Main(string[] args)
         {
             IServiceCollection services = new ServiceCollection();
-            services.AddLogging(loggingBuilder => loggingBuilder.AddFilter<Microsoft.Extensions.Logging.ApplicationInsights.ApplicationInsightsLoggerProvider>("Category", LogLevel.Information));
+            services.AddLogging(loggingBuilder => loggingBuilder.AddFilter<Microsoft.Extensions.Logging.ApplicationInsights.ApplicationInsightsLoggerProvider>("Simulation.CameraSimulation", LogLevel.Information));
             services.AddApplicationInsightsTelemetryWorkerService(Environment.GetEnvironmentVariable("APPINSIGHTS_INSTRUMENTATIONKEY"));
             IServiceProvider serviceProvider = services.BuildServiceProvider();
             ILogger<CameraSimulation> logger = serviceProvider.GetRequiredService<ILogger<CameraSimulation>>();
