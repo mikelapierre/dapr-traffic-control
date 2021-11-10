@@ -57,4 +57,4 @@ jobs:
           azcliversion: latest
           inlineScript: |
             echo "Starting Deploying"
-            az container create -n simulation -g dapr-workshop --registry-login-server daprworkshopreg.azurecr.io --registry-username ${{ secrets.REGISTRY_USERNAME }} --registry-password ${{ secrets.REGISTRY_PASSWORD }} --image daprworkshopreg.azurecr.io/simulation:${{ github.sha }} --secure-environment-variables "APPINSIGHTS_INSTRUMENTATIONKEY=${{ secrets.APPINSIGHTS_INSTRUMENTATIONKEY }}" "EH_CONNECTIONSTRING=${{ secrets.SERVICEBUS_CONNECTIONSTRING }}" --debug
+            az container create -n simulation -g dapr-workshop --registry-login-server daprworkshopreg.azurecr.io --registry-username ${{ secrets.REGISTRY_USERNAME }} --registry-password ${{ secrets.REGISTRY_PASSWORD }} --image daprworkshopreg.azurecr.io/simulation:${{ github.sha }} --secure-environment-variables "APPINSIGHTS_INSTRUMENTATIONKEY=${{ secrets.APPINSIGHTS_INSTRUMENTATIONKEY }}" "EH_CONNECTIONSTRING=${{ secrets.EH_CONNECTIONSTRING }}" --debug
