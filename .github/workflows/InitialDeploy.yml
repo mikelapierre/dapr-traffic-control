@@ -44,6 +44,6 @@ jobs:
         with:
           inlineScript: |
             az group create -g ${{ github.event.inputs.resourceGroup }} -l ${{ github.event.inputs.location }}
-            az deployment group create -g ${{ github.event.inputs.resourceGroup }} -f ./bicep/main.bicep \
+            az deployment group create -g ${{ github.event.inputs.resourceGroup }} -f ./master/bicep/main.bicep \
              -p \
                 servicePrincipalId=${{ env.objectId }}
