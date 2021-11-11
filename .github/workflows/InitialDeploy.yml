@@ -36,9 +36,10 @@ jobs:
         with:
           inlineScript: |
             creds=`echo '${{ secrets.AZURE_CREDENTIALS }}'`
-            echo $creds | jq
-            clientId=`echo $creds | jq .clientId`
+            clientId=`echo $creds | jq -r .clientId`
             az ad sp show --id $clientId
+            objectId=`az ad sp show --id $clientId | jq -r .objectId`
+            echo "objectId=$objectId" >> $GITHUB_ENV
 
       # - name: Deploy bicep
       #   uses: azure/CLI@v1
