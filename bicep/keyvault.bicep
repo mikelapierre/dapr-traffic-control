@@ -42,6 +42,12 @@ resource keyvault 'Microsoft.KeyVault/vaults@2019-09-01' = {
     enableSoftDelete: false
   }
 
+  resource resourceGroupSecret 'secrets' = {
+    name: 'resourceGroup'
+    properties: {
+      value: resourceGroup().name
+    }
+  }
   resource registryServerSecret 'secrets' = {
     name: 'registryServer'
     properties: {
