@@ -54,26 +54,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}          
 
-      - name: Deploy VehiculeRegistrationService
+      - name: Deploy Services
         run: |
-          gh workflow run VehicleRegistrationService.yaml -F action=create
+          cd master
+          gh workflow run VehicleRegistrationService -F action=create
+          gh workflow run FineCollectionService -F action=create
+          gh workflow run TrafficControlService -F action=create
+          gh workflow run Simulation
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-
-      - name: Deploy FineCollectionService
-        run: |
-          gh workflow run FineCollectionService.yaml -F action=create
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}   
-
-      - name: Deploy TrafficControlService
-        run: |
-          gh workflow run TrafficControlService.yaml -F action=create
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}   
-
-      - name: Deploy Simulation
-        run: |
-          gh workflow run Simulation.yaml
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}                                 
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}                          
