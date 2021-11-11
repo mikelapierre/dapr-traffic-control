@@ -37,8 +37,8 @@ jobs:
           inlineScript: |
             creds=`echo '${{ secrets.AZURE_CREDENTIALS }}'`
             echo $creds | jq
-            appId=`echo $creds | jq .appId`
-            az ad sp show --id appId
+            clientId=`echo $creds | jq .clientId`
+            az ad sp show --id $clientId
 
       # - name: Deploy bicep
       #   uses: azure/CLI@v1
