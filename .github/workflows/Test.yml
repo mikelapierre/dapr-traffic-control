@@ -1,0 +1,19 @@
+name: Test
+
+# When this action will be executed
+on:     
+
+  # Allow mannually trigger 
+  workflow_dispatch:  
+  
+jobs:
+ 
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Deploy VehiculeRegistrationService
+        run: |
+          gh workflow run VehicleRegistrationService.yaml -F action=create
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
