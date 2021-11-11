@@ -31,27 +31,25 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      # - name: Get service principal object id
-      #   uses: azure/CLI@v1
-      #   with:
-      #     inlineScript: |
-      #       clientId=`echo '${{ secrets.AZURE_CREDENTIALS }}' | jq -r .clientId`
-      #       objectId=`az ad sp show --id $clientId | jq -r .objectId`
-      #       echo "objectId=$objectId" >> $GITHUB_ENV
+      - name: Get service principal object id
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            clientId=`echo '${{ secrets.AZURE_CREDENTIALS }}' | jq -r .clientId`
+            objectId=`az ad sp show --id $clientId | jq -r .objectId`
+            echo "objectId=$objectId" >> $GITHUB_ENV
 
-      # - name: Deploy bicep
-      #   uses: azure/CLI@v1
-      #   with:
-      #     inlineScript: |
-      #       az group create -g ${{ github.event.inputs.resourceGroup }} -l ${{ github.event.inputs.location }}
-      #       deploymentOutput=`az deployment group create -g ${{ github.event.inputs.resourceGroup }} -f ./master/bicep/main.bicep -p servicePrincipalId=${{ env.objectId }}`
-      #       echo keyVaultName=`echo $deploymentOutput  | jq -r .properties.outputs.keyVaultName.value` >> $GITHUB_ENV
+      - name: Deploy bicep
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            az group create -g ${{ github.event.inputs.resourceGroup }} -l ${{ github.event.inputs.location }}
+            deploymentOutput=`az deployment group create -g ${{ github.event.inputs.resourceGroup }} -f ./master/bicep/main.bicep -p servicePrincipalId=${{ env.objectId }}`
+            echo keyVaultName=`echo $deploymentOutput  | jq -r .properties.outputs.keyVaultName.value` >> $GITHUB_ENV
       
-      #gh secret set KEYVAULT_NAME -b"${{ env.keyVaultName }}"          
       - name: Save Key Vault name
         run: |
-          ls -R
           cd master
-          gh secret set KEYVAULT_NAME -b"test" 
+          gh secret set KEYVAULT_NAME -b"${{ env.keyVaultName }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}          
