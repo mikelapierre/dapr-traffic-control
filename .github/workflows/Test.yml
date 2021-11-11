@@ -14,6 +14,7 @@ jobs:
     steps:
       - name: Deploy VehiculeRegistrationService
         run: |
-          gh workflow run VehicleRegistrationService.yaml -F action=create
+          cd master
+          gh workflow run VehicleRegistrationService.yaml -F action=create        
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
