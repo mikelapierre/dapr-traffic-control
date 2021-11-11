@@ -10,7 +10,7 @@ on:
         description: 'Resource Group'
         required: true
         default: 'dapr-workshop'
-      resourceGroup:
+      location:
         description: 'Location'
         required: true
         default: 'canadacentral'        
