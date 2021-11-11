@@ -44,6 +44,10 @@ jobs:
         with:
           inlineScript: |
             az group create -g ${{ github.event.inputs.resourceGroup }} -l ${{ github.event.inputs.location }}
-            az deployment group create -g ${{ github.event.inputs.resourceGroup }} -f ./master/bicep/main.bicep \
-             -p \
-                servicePrincipalId=${{ env.objectId }}
+            deploymentOutput=`az deployment group create -g ${{ github.event.inputs.resourceGroup }} -f ./master/bicep/main.bicep -p servicePrincipalId=${{ env.objectId }}`
+            echo keyVaultName=`echo $deploymentOutput  | jq -r .properties.outputs.keyVaultName.value` >> $GITHUB_ENV
+      
+      - name: Save Key Vault name
+        run: gh secret set KEYVAULT_NAME -b"${{ env.keyVaultName }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}

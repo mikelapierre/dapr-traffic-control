@@ -78,3 +78,5 @@ module kevault 'keyvault.bicep' = {
     maildevHost: maildev.outputs.maildevHost
   }
 }
+
+output keyVaultName string = vaultName

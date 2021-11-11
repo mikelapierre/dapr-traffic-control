@@ -39,6 +39,7 @@ resource keyvault 'Microsoft.KeyVault/vaults@2019-09-01' = {
         tenantId: tenantId
       }
     ]
+    enableSoftDelete: false
   }
 
   resource registryServerSecret 'secrets' = {
