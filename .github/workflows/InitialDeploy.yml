@@ -35,17 +35,15 @@ jobs:
         uses: azure/CLI@v1
         with:
           inlineScript: |
-            creds=`echo '${{ secrets.AZURE_CREDENTIALS }}'`
-            clientId=`echo $creds | jq -r .clientId`
-            az ad sp show --id $clientId
+            clientId=`echo '${{ secrets.AZURE_CREDENTIALS }}' | jq -r .clientId`
             objectId=`az ad sp show --id $clientId | jq -r .objectId`
             echo "objectId=$objectId" >> $GITHUB_ENV
 
-      # - name: Deploy bicep
-      #   uses: azure/CLI@v1
-      #   with:
-      #     inlineScript: |
-      #       az group create -g ${{ github.event.inputs.resourceGroup }} -l ${{ github.event.inputs.location }}
-      #       az deployment group create -g ${{ github.event.inputs.resourceGroup }} -f ./bicep/main.bicep \
-      #        -p \
-      #           servicePrincipalId=${{ env.servicePrincipalObjectId }}
+      - name: Deploy bicep
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            az group create -g ${{ github.event.inputs.resourceGroup }} -l ${{ github.event.inputs.location }}
+            az deployment group create -g ${{ github.event.inputs.resourceGroup }} -f ./bicep/main.bicep \
+             -p \
+                servicePrincipalId=${{ env.objectId }}
