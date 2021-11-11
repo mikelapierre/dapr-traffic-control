@@ -27,13 +27,25 @@ jobs:
         with:
           path: master
 
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}               
+
+      - name: Get Secrets
+        uses: azure/get-keyvault-secrets@v1
+        with:
+          keyvault: ${{ secrets.KEYVAULT_NAME }}
+          secrets: 'registryServer'
+        id: getSecrets
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
       - name: Log in to container registry
         uses: docker/login-action@v1
         with:
-          registry: daprworkshopreg.azurecr.io
+          registry: ${{ steps.getSecrets.outputs.registryServer }}
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
 
@@ -42,7 +54,7 @@ jobs:
         with:
           context: ./master/src/VehicleRegistrationService
           push: true
-          tags: daprworkshopreg.azurecr.io/vehicleregistrationservice:${{ github.sha }}
+          tags: ${{ steps.getSecrets.outputs.registryServer }}/vehicleregistrationservice:${{ github.sha }}
           file:  ./master/src/VehicleRegistrationService/Dockerfile
 
 
@@ -55,6 +67,18 @@ jobs:
         uses: actions/checkout@v2
         with:
           path: master
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}        
+
+      - name: Get Secrets
+        uses: azure/get-keyvault-secrets@v1
+        with:
+          keyvault: ${{ secrets.KEYVAULT_NAME }}
+          secrets: 'resourceGroup,registryServer,environmentId'
+        id: getSecrets          
 
       - name: Generate variables
         run: |           
@@ -71,20 +95,15 @@ jobs:
         with:
           files: '["./master/src/containerapps/vehicleregistrationservice.yaml"]'
         env: 
-          registry-server: daprworkshopreg.azurecr.io
+          registry-server: ${{ steps.getSecrets.outputs.registryServer }}
           registry-username: ${{ secrets.REGISTRY_USERNAME }}
           registry-password: ${{ secrets.REGISTRY_PASSWORD }}
-          environment-id: /subscriptions/a14336fa-6d98-43b5-8700-12f7edca1cde/resourceGroups/dapr-workshop/providers/Microsoft.Web/kubeEnvironments/dapr-workshop-envir-ai
+          environment-id:  ${{ steps.getSecrets.outputs.environmentId }}
           image-tag: ${{ github.sha }}          
           revision-suffix: ${{ env.REVISION_SUFFIX }}
     
       - name: Output file
-        run: cat ./master/src/containerapps/vehicleregistrationservice.yaml  
-
-      - name: Azure Login
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}        
+        run: cat ./master/src/containerapps/vehicleregistrationservice.yaml          
 
       - name: Deploy to containerapp
         uses: azure/CLI@v1
@@ -95,4 +114,4 @@ jobs:
             az provider register --namespace Microsoft.Web
             az extension add --source https://workerappscliextension.blob.core.windows.net/azure-cli-extension/containerapp-0.2.0-py2.py3-none-any.whl --yes
             echo "Starting Deploying"
-            az containerapp ${{ env.ACTION }} -n vehicleregistrationservice -g dapr-workshop --yaml ./master/src/containerapps/vehicleregistrationservice.yaml --debug
+            az containerapp ${{ env.ACTION }} -n vehicleregistrationservice -g ${{ steps.getSecrets.outputs.resourceGroup }} --yaml ./master/src/containerapps/vehicleregistrationservice.yaml --debug
