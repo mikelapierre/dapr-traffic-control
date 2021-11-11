@@ -22,22 +22,34 @@ jobs:
         with:
           path: master
 
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}               
+
+      - name: Get Secrets
+        uses: azure/get-keyvault-secrets@v1
+        with:
+          keyvault: ${{ secrets.KEYVAULT_NAME }}
+          secrets: 'registryServer,registryUsername,registryPassword'
+        id: getSecrets
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
       - name: Log in to container registry
         uses: docker/login-action@v1
         with:
-          registry: daprworkshopreg.azurecr.io
-          username: ${{ secrets.REGISTRY_USERNAME }}
-          password: ${{ secrets.REGISTRY_PASSWORD }}
+          registry: ${{ steps.getSecrets.outputs.registryServer }}
+          username: ${{ steps.getSecrets.outputs.registryUsername }}
+          password: ${{ steps.getSecrets.outputs.registryPassword }}
 
       - name: Build and push container image to registry
         uses: docker/build-push-action@v2
         with:
           context: ./master/src/Simulation
           push: true
-          tags: daprworkshopreg.azurecr.io/simulation:${{ github.sha }}
+          tags: ${{ steps.getSecrets.outputs.registryServer }}/simulation:${{ github.sha }}
           file:  ./master/src/Simulation/dockerfile
 
 
@@ -49,7 +61,14 @@ jobs:
       - name: Azure Login
         uses: azure/login@v1
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}        
+          creds: ${{ secrets.AZURE_CREDENTIALS }}    
+
+      - name: Get Secrets
+        uses: azure/get-keyvault-secrets@v1
+        with:
+          keyvault: ${{ secrets.KEYVAULT_NAME }}
+          secrets: 'resourceGroup,registryServer,registryUsername,registryPassword,appInsightsInstrumentationKey,eventHubNsConnectionString'
+        id: getSecrets               
 
       - name: Deploy to ACI
         uses: azure/CLI@v1
@@ -57,4 +76,4 @@ jobs:
           azcliversion: latest
           inlineScript: |
             echo "Starting Deploying"
-            az container create -n simulation -g dapr-workshop --registry-login-server daprworkshopreg.azurecr.io --registry-username ${{ secrets.REGISTRY_USERNAME }} --registry-password ${{ secrets.REGISTRY_PASSWORD }} --image daprworkshopreg.azurecr.io/simulation:${{ github.sha }} --secure-environment-variables "APPINSIGHTS_INSTRUMENTATIONKEY=${{ secrets.APPINSIGHTS_INSTRUMENTATIONKEY }}" "EH_CONNECTIONSTRING=${{ secrets.EH_CONNECTIONSTRING }}" --debug
+            az container create -n simulation -g ${{ steps.getSecrets.outputs.resourceGroup }} --registry-login-server ${{ steps.getSecrets.outputs.registryServer }} --registry-username ${{ steps.getSecrets.outputs.registryUsername }} --registry-password ${{ steps.getSecrets.outputs.registryPassword }} --image ${{ steps.getSecrets.outputs.registryServer }}/simulation:${{ github.sha }} --secure-environment-variables "APPINSIGHTS_INSTRUMENTATIONKEY=${{ steps.getSecrets.outputs.appInsightsInstrumentationKey }}" "EH_CONNECTIONSTRING=${{ steps.getSecrets.outputs.eventHubNsConnectionString }}" --debug
