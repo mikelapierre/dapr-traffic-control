@@ -53,3 +53,27 @@ jobs:
           gh secret set KEYVAULT_NAME -b"${{ env.keyVaultName }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}          
+
+      - name: Deploy VehiculeRegistrationService
+        run: |
+          gh workflow run VehicleRegistrationService.yaml -F action=create
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+
+      - name: Deploy FineCollectionService
+        run: |
+          gh workflow run FineCollectionService.yaml -F action=create
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}   
+
+      - name: Deploy TrafficControlService
+        run: |
+          gh workflow run TrafficControlService.yaml -F action=create
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}   
+
+      - name: Deploy Simulation
+        run: |
+          gh workflow run Simulation.yaml
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}                                 
