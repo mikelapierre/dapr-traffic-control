@@ -58,20 +58,12 @@ namespace Simulation
                         vehicleRegistered.Timestamp = DateTime.Now;
                         vehicleRegistered.Lane = _rnd.Next(1, 4);
                         await _trafficControlService.SendVehicleExitAsync(vehicleRegistered);
-<<<<<<< HEAD
                         Log($"Simulated EXIT of vehicle with license-number {vehicleRegistered.LicenseNumber} in lane {vehicleRegistered.Lane}");
-=======
-                        Console.WriteLine($"Simulated EXIT of vehicle with license-number {vehicleRegistered.LicenseNumber} in lane {vehicleRegistered.Lane}");
->>>>>>> 44b83a582d35d208b98a0c48f876b107434369ad
                     }).Wait();
                 }
                 catch (Exception ex)
                 {
-<<<<<<< HEAD
                     Log($"Camera {_camNumber} error: {ex.Message}"); 
-=======
-                    Console.WriteLine($"Camera {_camNumber} error: {ex.Message}");
->>>>>>> 44b83a582d35d208b98a0c48f876b107434369ad
                 }
             }
         }
