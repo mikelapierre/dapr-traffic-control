@@ -237,7 +237,7 @@ To see the emails that are sent by the FineCollectionService, open a browser and
 
 To stop the application and remove everything from the Kubernetes cluster, execute the `stop.ps1` script.
 
-## Run the application on Container Apps
+## Run the application on Azure Container Apps
 
 1. Fork the sample repo
 2. Create the following required [encrypted secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets#creating-encrypted-secrets-for-a-repository) for the sample
