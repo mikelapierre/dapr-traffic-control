@@ -63,7 +63,7 @@ namespace Simulation
                 }
                 catch (Exception ex)
                 {
-                    Log($"Camera {_camNumber} error: {ex.Message}");
+                    Log($"Camera {_camNumber} error: {ex.Message}"); 
                 }
             }
         }
