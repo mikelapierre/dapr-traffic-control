@@ -15,6 +15,8 @@ configuration:
     value: #{servicebus-connectionstring}#
   - name: storageaccount-key
     value: #{storageaccount-key}#
+  - name: storageaccount-connectionstring
+    value: DefaultEndpointsProtocol=https;AccountName=#{storageaccount-name}#;AccountKey=#{storageaccount-key}#;EndpointSuffix=core.windows.net 
 kubeEnvironmentId: #{environment-id}#    
 template:
   containers:
@@ -23,6 +25,13 @@ template:
     resources:
       cpu: 0.25
       memory: 0.5Gi
+    env:
+      - name: "ENTRYCAM_CONNECTIONSTRING"
+        secretRef: entrycam-connectionstring
+      - name: "EXITCAM_CONNECTIONSTRING"
+        secretRef: exitcam-connectionstring
+      - name: "STORAGE_CONNECTIONSTRING"
+        secretRef: storageaccount-connectionstring
   dapr:
     appId: trafficcontrolservice
     appPort: 6000
@@ -75,5 +84,24 @@ template:
   revisionSuffix: #{revision-suffix}#
   scale:
     maxReplicas: 5
-    minReplicas: 1
+    minReplicas: 0
+    rules:
+    - custom:
+        metadata:
+          connectionFromEnv: ENTRYCAM_CONNECTIONSTRING
+          storageConnectionFromEnv: STORAGE_CONNECTIONSTRING
+          consumerGroup: $Default
+          blobContainer: entrycam-checkpoint
+          checkpointStrategy: blobMetadata
+        type: azure-eventhub
+      name: entrycam-eventhub-autoscale
+    - custom:
+        metadata:
+          connectionFromEnv: EXITCAM_CONNECTIONSTRING
+          storageConnectionFromEnv: STORAGE_CONNECTIONSTRING
+          consumerGroup: $Default
+          blobContainer: exitcam-checkpoint
+          checkpointStrategy: blobMetadata
+        type: azure-eventhub
+      name: exitcam-eventhub-autoscale         
 type: Microsoft.Web/containerApps
