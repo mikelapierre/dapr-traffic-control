@@ -249,10 +249,10 @@ To stop the application and remove everything from the Kubernetes cluster, execu
 
 3. Open the GitHub Actions, select the **InitialDeploy** action and choose to run the workflow.  
   
-    This will start the GitHub Actions which will build the code, publish them to your GitHub repository as private container images, create an Azure Container App environment, an Event Hub namespace, a Service Bus namespace, a Storage Account, a Key Vault, Container Instances for the maildev service and the simulator, and finally Container Apps for each of the microservices.
+    This will start the GitHub Actions which will build the code, publish them to your GitHub repository as private container images, create an Azure Container App environment, an Event Hub namespace, a Service Bus namespace, a Storage Account, a Key Vault, Container Instances for the maildev service and the simulation, and finally Container Apps for each of the microservices.
 4. Once the GitHub Actions have completed successfully, navigate to the [Azure Portal](https://portal.azure.com) and select the resource group you created.  Open the `maildev` container instance, and browse to the URL on the 1080 port.  You should see emails coming in for traffic violations.  
 5. After a few minutes, you can open the application insights resource created and select the **Application Map**, you should see a visualization of your calls between Container Apps.    
-6. You can stop the simulator container instance at anytime. After a few minutes, the `finecollectionservice` and the `vehicleregistrationservice` will scale to zero thanks to Service Bus KEDA scaler and the built-in HTTP scaler. You can verify this by looking at le Log Anaytics, you should see the application shutdown log.
+6. You can stop the simulation container instance at anytime. After a few minutes, the `finecollectionservice`, `trafficcontrolservice` and the `vehicleregistrationservice` will scale to zero thanks to the Event Hubs and Service Bus KEDA scalers and the built-in HTTP scaler. You can verify this by looking at le Log Anaytics, you should see the application shutdown log.
 
 ## Dapr for .NET Developers
 
