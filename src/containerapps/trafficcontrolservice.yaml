@@ -92,7 +92,7 @@ template:
           storageConnectionFromEnv: STORAGE_CONNECTIONSTRING
           consumerGroup: $Default
           blobContainer: entrycam-checkpoint
-          checkpointStrategy: blobMetadata
+          checkpointStrategy: goSdk
         type: azure-eventhub
       name: entrycam-eventhub-autoscale
     - custom:
@@ -101,7 +101,7 @@ template:
           storageConnectionFromEnv: STORAGE_CONNECTIONSTRING
           consumerGroup: $Default
           blobContainer: exitcam-checkpoint
-          checkpointStrategy: blobMetadata
+          checkpointStrategy: goSdk
         type: azure-eventhub
       name: exitcam-eventhub-autoscale         
 type: Microsoft.Web/containerApps
