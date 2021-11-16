@@ -1,0 +1,103 @@
+name: TrafficControlService-Bicep
+
+# When this action will be executed
+on:
+  # Automatically trigger it when detected changes in repo
+  push:
+    branches:
+      - master
+    paths:
+      - src/TrafficControlService/**
+      
+  # Allow mannually trigger 
+  workflow_dispatch:  
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout to the branch
+        uses: actions/checkout@v2
+        with:
+          path: master
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}               
+
+      - name: Get Secrets
+        uses: azure/get-keyvault-secrets@v1
+        with:
+          keyvault: ${{ secrets.KEYVAULT_NAME }}
+          secrets: 'registryServer,registryUsername,registryPassword'
+        id: getSecrets          
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Log in to container registry
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ steps.getSecrets.outputs.registryServer }}
+          username: ${{ steps.getSecrets.outputs.registryUsername }}
+          password: ${{ steps.getSecrets.outputs.registryPassword }}      
+
+      - name: Build and push container image to registry
+        uses: docker/build-push-action@v2
+        with:
+          context: ./master/src/TrafficControlService
+          push: true
+          tags: ${{ steps.getSecrets.outputs.registryServer }}/trafficcontrolservice:${{ github.sha }}
+          file: ./master/src/TrafficControlService/dockerfile
+
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    
+    steps:
+      - name: Checkout to the branch
+        uses: actions/checkout@v2
+        with:
+          path: master
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}        
+
+      - name: Get Secrets
+        uses: azure/get-keyvault-secrets@v1
+        with:
+          keyvault: ${{ secrets.KEYVAULT_NAME }}
+          secrets: 'resourceGroup,registryServer,registryUsername,registryPassword,environmentId,serviceBusConnectionString,entrycamConnectionString,exitcamConnectionString,storageAccountName,storageAccountKey'
+        id: getSecrets           
+
+      - name: Replace tokens in yaml file
+        uses: cschleiden/replace-tokens@v1
+        with:
+          files: '["./master/src/containerapps/trafficcontrolservice.params.json"]'
+        env: 
+          registry-server: ${{ steps.getSecrets.outputs.registryServer }}
+          registry-username: ${{ steps.getSecrets.outputs.registryUsername }}
+          registry-password: ${{ steps.getSecrets.outputs.registryPassword }}
+          environment-id:  ${{ steps.getSecrets.outputs.environmentId }}
+          servicebus-connectionstring: ${{ steps.getSecrets.outputs.serviceBusConnectionString }}
+          entrycam-connectionstring: ${{ steps.getSecrets.outputs.entrycamConnectionString }}
+          exitcam-connectionstring: ${{ steps.getSecrets.outputs.exitcamConnectionString }}
+          storageaccount-name: ${{ steps.getSecrets.outputs.storageAccountName }}
+          storageaccount-key: ${{ steps.getSecrets.outputs.storageAccountKey }}
+          image-tag: ${{ github.sha }}
+          revision-suffix: ${{ env.REVISION_SUFFIX }}
+    
+      - name: Output file
+        run: cat ./master/src/containerapps/trafficcontrolservice.params.json
+
+      - name: Deploy bicep
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            az deployment group create -g ${{ steps.getSecrets.outputs.resourceGroup }} -f ./master/bicep/containerapp.bicep  \
+             -p @master/src/containerapps/trafficcontrolservice.params.json

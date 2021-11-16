@@ -1,5 +1,5 @@
 configuration:
-  activeRevisionsMode: Multiple
+  activeRevisionsMode: Single
   registries:
   - passwordSecretRef: registry-password
     server: #{registry-server}#
