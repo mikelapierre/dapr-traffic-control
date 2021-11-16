@@ -247,7 +247,7 @@ To stop the application and remove everything from the Kubernetes cluster, execu
   | AZURE_CREDENTIALS | The JSON credentials for an Azure subscription. [Learn more](https://docs.microsoft.com/azure/developer/github/connect-from-azure?tabs=azure-portal%2Cwindows#create-a-service-principal-and-add-it-as-a-github-secret) |
   | GH_TOKEN | A GitHub personal access token with the `repo` scope. [Learn more](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) |
 
-3. Open the GitHub Actions, select the **InitialDeploy** action and choose to run the workflow.  
+3. Open the GitHub Actions and enable workflows if required. Select the **InitialDeploy** action and choose to run the workflow.  
   
     This will start the GitHub Actions which will build the code, publish them to your GitHub repository as private container images, create an Azure Container App environment, an Event Hub namespace, a Service Bus namespace, a Storage Account, a Key Vault, Container Instances for the maildev service and the simulation, and finally Container Apps for each of the microservices.
 4. Once the GitHub Actions have completed successfully, navigate to the [Azure Portal](https://portal.azure.com) and select the resource group you created.  Open the `maildev` container instance, and browse to the URL on the 1080 port.  You should see emails coming in for traffic violations.  
