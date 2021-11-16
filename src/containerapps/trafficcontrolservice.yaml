@@ -26,11 +26,11 @@ template:
       cpu: 0.25
       memory: 0.5Gi
     env:
-      - name: "ENTRYCAM_CONNECTIONSTRING"
+      - name: ENTRYCAM_CONNECTIONSTRING
         secretRef: entrycam-connectionstring
-      - name: "EXITCAM_CONNECTIONSTRING"
+      - name: EXITCAM_CONNECTIONSTRING
         secretRef: exitcam-connectionstring
-      - name: "STORAGE_CONNECTIONSTRING"
+      - name: STORAGE_CONNECTIONSTRING
         secretRef: storageaccount-connectionstring
   dapr:
     appId: trafficcontrolservice
@@ -40,7 +40,7 @@ template:
       - name: connectionString
         secretRef: entrycam-connectionstring
       - name: consumerGroup
-        value: "$Default"
+        value: $Default
       - name: storageAccountName
         value: #{storageaccount-name}#
       - name: storageAccountKey
@@ -54,7 +54,7 @@ template:
       - name: connectionString
         secretRef: exitcam-connectionstring
       - name: consumerGroup
-        value: "$Default"
+        value: $Default
       - name: storageAccountName
         value: #{storageaccount-name}#
       - name: storageAccountKey
