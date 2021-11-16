@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.ApplicationInsights;
+using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Simulation.Proxies;
@@ -13,11 +13,10 @@ namespace Simulation
         static void Main(string[] args)
         {
             IServiceCollection services = new ServiceCollection();
+            services.Configure<TelemetryConfiguration>(o => o.TelemetryInitializers.Add(new ServiceNameInitializer()));
             services.AddLogging(loggingBuilder => loggingBuilder.AddFilter<Microsoft.Extensions.Logging.ApplicationInsights.ApplicationInsightsLoggerProvider>("Simulation.CameraSimulation", LogLevel.Information));
             services.AddApplicationInsightsTelemetryWorkerService(Environment.GetEnvironmentVariable("APPINSIGHTS_INSTRUMENTATIONKEY"));
             IServiceProvider serviceProvider = services.BuildServiceProvider();
-            var telemetryClient = serviceProvider.GetRequiredService<TelemetryClient>();
-            telemetryClient.Context.Cloud.RoleName = "simulation";
             ILogger<CameraSimulation> logger = serviceProvider.GetRequiredService<ILogger<CameraSimulation>>();
 
             int lanes = 3;
