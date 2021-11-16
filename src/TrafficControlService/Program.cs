@@ -18,6 +18,5 @@ namespace TrafficControlService
                         .UseUrls("http://*:6000")
                         .UseStartup<Startup>();
                 });
-        
     }
 }
