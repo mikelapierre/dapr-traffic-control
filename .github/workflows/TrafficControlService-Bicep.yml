@@ -75,6 +75,10 @@ jobs:
           secrets: 'resourceGroup,registryServer,registryUsername,registryPassword,environmentId,serviceBusConnectionString,entrycamConnectionString,exitcamConnectionString,storageAccountName,storageAccountKey'
         id: getSecrets           
 
+      - name: Generate variables
+        run: |           
+           echo REVISION_SUFFIX=`echo "${{ github.sha }}" | cut -c 1-7` >> $GITHUB_ENV  
+
       - name: Replace tokens in yaml file
         uses: cschleiden/replace-tokens@v1
         with:
