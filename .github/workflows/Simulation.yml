@@ -72,7 +72,7 @@ jobs:
 
       - name: Generate variables
         run: |           
-           if ["${{ steps.getSecrets.outputs.containerInstanceSubnetId }}" != ""]
+           if [ "${{ steps.getSecrets.outputs.containerInstanceSubnetId }}" != "" ]
            then
              echo "SUBNET=--subnet ${{ steps.getSecrets.outputs.containerInstanceSubnetId }}" >> $GITHUB_ENV 
            fi
