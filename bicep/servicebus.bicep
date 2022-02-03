@@ -35,6 +35,12 @@ resource servicebusNs 'Microsoft.ServiceBus/namespaces@2017-04-01' = {
     name: 'default'
     properties: {
       defaultAction: 'Deny'
+      ipRules: [
+        {
+           action: 'Allow'
+           ipMask: '0.0.0.0/32'
+        }
+     ]      
     }
   }
 }

@@ -24,9 +24,15 @@ resource vnet 'Microsoft.Network/virtualNetworks@2021-05-01' = {
         }
       }
       {
+        name: 'container-instances'
+        properties: {
+            addressPrefix: '10.10.16.0/24'
+        }
+      }       
+      {
         name: 'private-endpoints'
         properties: {
-            addressPrefix: '10.10.16.0/28'
+            addressPrefix: '10.10.17.0/24'
             privateEndpointNetworkPolicies: 'Disabled'
         }
       }        
@@ -37,4 +43,5 @@ resource vnet 'Microsoft.Network/virtualNetworks@2021-05-01' = {
 output vnetId string = vnet.id
 output appSubnetId string = vnet.properties.subnets[0].id
 output controlPlanSubnetId string = vnet.properties.subnets[1].id
-output privateEndpointSubnetId string = vnet.properties.subnets[2].id
+output containerInstanceSubnetId string = vnet.properties.subnets[2].id
+output privateEndpointSubnetId string = vnet.properties.subnets[3].id

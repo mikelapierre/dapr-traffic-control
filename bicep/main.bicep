@@ -113,7 +113,7 @@ module maildev 'maildev.bicep' = {
   params: {
     location: location
     dnsNameLabel: maildevDnsName
-    vaultName: vaultName
+    vaultName: vaultName   
   }
   dependsOn: [
     keyvault

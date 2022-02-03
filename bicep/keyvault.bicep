@@ -5,6 +5,7 @@ param objectId string
 param deployInVnet bool
 param vnetId string = ''
 param privateEndpointSubnetId string = ''
+param containerInstanceSubnetId string = ''
 
 resource keyvault 'Microsoft.KeyVault/vaults@2019-09-01' = {
   name: vaultName
@@ -42,6 +43,13 @@ resource keyvault 'Microsoft.KeyVault/vaults@2019-09-01' = {
       value: resourceGroup().name
     }
   }
+
+  resource containerInstanceSubnetIdSecret 'secrets' = {
+    name: 'containerInstanceSubnetId'
+    properties: {
+      value: containerInstanceSubnetId
+    }
+  }  
 }
 
 resource privatedns 'Microsoft.Network/privateDnsZones@2020-06-01' = if (deployInVnet) {

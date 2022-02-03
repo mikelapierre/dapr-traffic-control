@@ -67,8 +67,15 @@ jobs:
         uses: azure/get-keyvault-secrets@v1
         with:
           keyvault: ${{ secrets.KEYVAULT_NAME }}
-          secrets: 'resourceGroup,registryServer,registryUsername,registryPassword,appInsightsInstrumentationKey,eventHubNsConnectionString'
-        id: getSecrets               
+          secrets: 'resourceGroup,registryServer,registryUsername,registryPassword,appInsightsInstrumentationKey,eventHubNsConnectionString,containerInstanceSubnetId'
+        id: getSecrets         
+
+      - name: Generate variables
+        run: |           
+           if ["${{ steps.getSecrets.outputs.containerInstanceSubnetId }}" != ""]
+           then
+             echo "SUBNET=--subnet ${{ steps.getSecrets.outputs.containerInstanceSubnetId }}" >> $GITHUB_ENV 
+           fi
 
       - name: Deploy to ACI
         uses: azure/CLI@v1
@@ -76,4 +83,4 @@ jobs:
           azcliversion: latest
           inlineScript: |
             echo "Starting Deploying"
-            az container create -n simulation -g ${{ steps.getSecrets.outputs.resourceGroup }} --registry-login-server ${{ steps.getSecrets.outputs.registryServer }} --registry-username ${{ steps.getSecrets.outputs.registryUsername }} --registry-password ${{ steps.getSecrets.outputs.registryPassword }} --image ${{ steps.getSecrets.outputs.registryServer }}/simulation:${{ github.sha }} --secure-environment-variables "APPINSIGHTS_INSTRUMENTATIONKEY=${{ steps.getSecrets.outputs.appInsightsInstrumentationKey }}" "EH_CONNECTIONSTRING=${{ steps.getSecrets.outputs.eventHubNsConnectionString }}" --debug
+            az container create -n simulation -g ${{ steps.getSecrets.outputs.resourceGroup }} --registry-login-server ${{ steps.getSecrets.outputs.registryServer }} --registry-username ${{ steps.getSecrets.outputs.registryUsername }} --registry-password ${{ steps.getSecrets.outputs.registryPassword }} --image ${{ steps.getSecrets.outputs.registryServer }}/simulation:${{ github.sha }} ${{ env.SUBNET }} --secure-environment-variables "APPINSIGHTS_INSTRUMENTATIONKEY=${{ steps.getSecrets.outputs.appInsightsInstrumentationKey }}" "EH_CONNECTIONSTRING=${{ steps.getSecrets.outputs.eventHubNsConnectionString }}" --debug
