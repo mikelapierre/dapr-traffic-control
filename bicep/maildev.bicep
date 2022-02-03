@@ -1,5 +1,6 @@
 param location string
 param dnsNameLabel string
+param vaultName string
 
 resource maildev 'Microsoft.ContainerInstance/containerGroups@2021-07-01' = {
   name: 'maildev'
@@ -54,4 +55,13 @@ resource maildev 'Microsoft.ContainerInstance/containerGroups@2021-07-01' = {
   }
 }
 
-output maildevHost string = maildev.properties.ipAddress.fqdn
+resource keyvault 'Microsoft.KeyVault/vaults@2019-09-01' existing =  {
+  name: vaultName
+
+  resource maildevHostSecret 'secrets' = {
+    name: 'maildevHost'
+    properties: {
+      value: maildev.properties.ipAddress.fqdn
+    }
+  } 
+}

@@ -46,7 +46,11 @@ module environment 'environment.bicep' = {
   params: {
     environmentName: environmentName
     location: location
+    vaultName: vaultName
   }
+  dependsOn: [
+    keyvault
+  ] 
 }
 
 module storage 'storage.bicep' = {
@@ -54,7 +58,11 @@ module storage 'storage.bicep' = {
   params: {
     location: location
     storageAccountName: storageAccountName
+    vaultName: vaultName
   }
+  dependsOn: [
+    keyvault
+  ] 
 }
 
 module registry 'registry.bicep' = {
@@ -62,7 +70,11 @@ module registry 'registry.bicep' = {
   params: {
     location: location
     registryName: registryName
+    vaultName: vaultName
   }
+  dependsOn: [
+    keyvault
+  ] 
 }
 
 module servicebus 'servicebus.bicep' = {
@@ -70,7 +82,11 @@ module servicebus 'servicebus.bicep' = {
   params: {
     location: location
     serviceBusNamespaceName: serviceBusNamespaceName
+    vaultName: vaultName
   }
+  dependsOn: [
+    keyvault
+  ] 
 }
 
 module eventhub 'eventhub.bicep' = {
@@ -78,7 +94,11 @@ module eventhub 'eventhub.bicep' = {
   params: {
     location: location    
     eventHubNamespaceName: eventHubNamespaceName
+    vaultName: vaultName
   }
+  dependsOn: [
+    keyvault
+  ] 
 }
 
 module maildev 'maildev.bicep' = {
@@ -86,28 +106,20 @@ module maildev 'maildev.bicep' = {
   params: {
     location: location
     dnsNameLabel: maildevDnsName
+    vaultName: vaultName
   }
+  dependsOn: [
+    keyvault
+  ] 
 }
 
-module kevault 'keyvault.bicep' = {
+module keyvault 'keyvault.bicep' = {
   name: 'keyvault'
   params: {
     location: location
     tenantId: tenantId
     objectId: servicePrincipalId
     vaultName: vaultName
-    registryServer: registry.outputs.registryServer
-    registryUsername: registry.outputs.registryUsername
-    registryPassword: registry.outputs.registryPassword
-    environmentId: environment.outputs.environmentId
-    serviceBusConnectionString: servicebus.outputs.connectionString
-    storageAccountName: storageAccountName
-    storageAccountKey: storage.outputs.storageAccountKey
-    eventHubNsConnectionString: eventhub.outputs.nsConnectionString
-    entrycamConnectionString: eventhub.outputs.entryCamConnectionString
-    exitcamConnectionString: eventhub.outputs.exitCamConnectionString
-    appInsightsInstrumentationKey: environment.outputs.appInsightsInstrumentationKey
-    maildevHost: maildev.outputs.maildevHost
   }
 }
 
