@@ -29,6 +29,7 @@ module keyvault 'keyvault.bicep' = {
     deployInVnet: deployInVnet
     vnetId: vnet.outputs.vnetId
     privateEndpointSubnetId: vnet.outputs.privateEndpointSubnetId
+    containerInstanceSubnetId: vnet.outputs.containerInstanceSubnetId
   }
 }
 
