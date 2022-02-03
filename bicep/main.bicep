@@ -8,6 +8,38 @@ param vaultName string = 'vault-${uniqueString(resourceGroup().id)}'
 param maildevDnsName string = 'maildev-${uniqueString(resourceGroup().id)}'
 param tenantId string = subscription().tenantId
 param servicePrincipalId string
+param deployInVnet bool = true
+
+resource vnet 'Microsoft.Network/virtualNetworks@2021-05-01' = if (deployInVnet) {
+  name: 'container-app-vnet'
+  properties: {
+     addressSpace: {
+        addressPrefixes: [
+          '10.10.0.0/16'
+        ]      
+     }
+     subnets: [
+        {
+           name: 'container-control-plane'
+           properties: {
+              addressPrefix: '10.10.0.0/21'
+           }
+        }
+        {
+          name: 'container-apps'
+          properties: {
+             addressPrefix: '10.10.8.0/21'
+          }
+        }
+        {
+          name: 'private-endpoints'
+          properties: {
+             addressPrefix: '10.10.16.0/28'
+          }
+        }        
+     ]
+  }
+}
 
 module environment 'environment.bicep' = {
   name: 'container-app-environment'
