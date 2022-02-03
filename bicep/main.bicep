@@ -6,51 +6,30 @@ param serviceBusNamespaceName string = 'servicebusns-${uniqueString(resourceGrou
 param eventHubNamespaceName string = 'eventhubns-${uniqueString(resourceGroup().id)}'
 param vaultName string = 'vault-${uniqueString(resourceGroup().id)}'
 param maildevDnsName string = 'maildev-${uniqueString(resourceGroup().id)}'
+param vnetName string = 'vnet-${uniqueString(resourceGroup().id)}'
 param tenantId string = subscription().tenantId
 param servicePrincipalId string
-param deployInVnet bool = true
+param deployInVnet bool
 
-resource vnet 'Microsoft.Network/virtualNetworks@2021-05-01' = if (deployInVnet) {
-  name: 'container-app-vnet'
-  properties: {
-     addressSpace: {
-        addressPrefixes: [
-          '10.10.0.0/16'
-        ]      
-     }
-     subnets: [
-        {
-           name: 'container-control-plane'
-           properties: {
-              addressPrefix: '10.10.0.0/21'
-           }
-        }
-        {
-          name: 'container-apps'
-          properties: {
-             addressPrefix: '10.10.8.0/21'
-          }
-        }
-        {
-          name: 'private-endpoints'
-          properties: {
-             addressPrefix: '10.10.16.0/28'
-          }
-        }        
-     ]
+module vnet 'vnet.bicep' = if (deployInVnet) {
+  name: 'vnet'
+  params: {
+    location: location
+    vnetName: vnetName
   }
 }
 
-module environment 'environment.bicep' = {
-  name: 'container-app-environment'
+module keyvault 'keyvault.bicep' = {
+  name: 'keyvault'
   params: {
-    environmentName: environmentName
     location: location
+    tenantId: tenantId
+    objectId: servicePrincipalId
     vaultName: vaultName
+    deployInVnet: deployInVnet
+    vnetId: vnet.outputs.vnetId
+    privateEndpointSubnetId: vnet.outputs.privateEndpointSubnetId
   }
-  dependsOn: [
-    keyvault
-  ] 
 }
 
 module storage 'storage.bicep' = {
@@ -59,6 +38,9 @@ module storage 'storage.bicep' = {
     location: location
     storageAccountName: storageAccountName
     vaultName: vaultName
+    deployInVnet: deployInVnet
+    vnetId: vnet.outputs.vnetId
+    privateEndpointSubnetId: vnet.outputs.privateEndpointSubnetId    
   }
   dependsOn: [
     keyvault
@@ -71,6 +53,9 @@ module registry 'registry.bicep' = {
     location: location
     registryName: registryName
     vaultName: vaultName
+    deployInVnet: deployInVnet
+    vnetId: vnet.outputs.vnetId
+    privateEndpointSubnetId: vnet.outputs.privateEndpointSubnetId        
   }
   dependsOn: [
     keyvault
@@ -83,6 +68,9 @@ module servicebus 'servicebus.bicep' = {
     location: location
     serviceBusNamespaceName: serviceBusNamespaceName
     vaultName: vaultName
+    deployInVnet: deployInVnet
+    vnetId: vnet.outputs.vnetId
+    privateEndpointSubnetId: vnet.outputs.privateEndpointSubnetId           
   }
   dependsOn: [
     keyvault
@@ -95,6 +83,25 @@ module eventhub 'eventhub.bicep' = {
     location: location    
     eventHubNamespaceName: eventHubNamespaceName
     vaultName: vaultName
+    deployInVnet: deployInVnet
+    vnetId: vnet.outputs.vnetId
+    privateEndpointSubnetId: vnet.outputs.privateEndpointSubnetId    
+  }
+  dependsOn: [
+    keyvault
+    servicebus // To prevent the private dns zone to be created simultanously
+  ] 
+}
+
+module environment 'environment.bicep' = {
+  name: 'container-app-environment'
+  params: {
+    environmentName: environmentName
+    location: location
+    vaultName: vaultName
+    deployInVnet: deployInVnet
+    appsSubnetId: vnet.outputs.appSubnetId
+    controlPlaneSubnetId: vnet.outputs.controlPlanSubnetId
   }
   dependsOn: [
     keyvault
@@ -111,16 +118,6 @@ module maildev 'maildev.bicep' = {
   dependsOn: [
     keyvault
   ] 
-}
-
-module keyvault 'keyvault.bicep' = {
-  name: 'keyvault'
-  params: {
-    location: location
-    tenantId: tenantId
-    objectId: servicePrincipalId
-    vaultName: vaultName
-  }
 }
 
 output keyVaultName string = vaultName

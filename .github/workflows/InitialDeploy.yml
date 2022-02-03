@@ -13,7 +13,11 @@ on:
       location:
         description: 'Location'
         required: true
-        default: 'canadacentral'        
+        default: 'canadacentral'
+      deployInVnet:
+        description: 'Deploy all resources inside a vnet'
+        required: true
+        default: 'false'          
 
 jobs:
  
@@ -44,7 +48,7 @@ jobs:
         with:
           inlineScript: |
             az group create -g ${{ github.event.inputs.resourceGroup }} -l ${{ github.event.inputs.location }}
-            deploymentOutput=`az deployment group create -g ${{ github.event.inputs.resourceGroup }} -f ./master/bicep/main.bicep -p servicePrincipalId=${{ env.objectId }}`
+            deploymentOutput=`az deployment group create -g ${{ github.event.inputs.resourceGroup }} -f ./master/bicep/main.bicep -p servicePrincipalId=${{ env.objectId }} -p deployInVnet=${{ github.event.inputs.deployInVnet }}`
             echo keyVaultName=`echo $deploymentOutput  | jq -r .properties.outputs.keyVaultName.value` >> $GITHUB_ENV
       
       - name: Save Key Vault name

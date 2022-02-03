@@ -3,6 +3,9 @@ param logAnalyticsWorkspaceName string = 'logs-${environmentName}'
 param appInsightsName string = 'appins-${environmentName}'
 param location string = resourceGroup().location
 param vaultName string
+param deployInVnet bool
+param appsSubnetId string = ''
+param controlPlaneSubnetId string = ''
 
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2020-03-01-preview' = {
   name: logAnalyticsWorkspaceName
@@ -42,6 +45,8 @@ resource environment 'Microsoft.Web/kubeEnvironments@2021-02-01' = {
     }
     containerAppsConfiguration: {
       daprAIInstrumentationKey: appInsights.properties.InstrumentationKey
+      appSubnetResourceId: deployInVnet ? appsSubnetId : null
+      controlPlaneSubnetResourceId: deployInVnet ? controlPlaneSubnetId : null
     }
   }
 }
