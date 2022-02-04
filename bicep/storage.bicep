@@ -26,9 +26,9 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-04-01' = {
       }
       keySource: 'Microsoft.Storage'
     }
-    networkAcls: {
+    networkAcls: deployInVnet ? {
       defaultAction: 'Deny'
-    }
+    } : null
     accessTier: 'Hot'
   }
 }

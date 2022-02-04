@@ -56,7 +56,7 @@ resource eventhubNs 'Microsoft.EventHub/namespaces@2017-04-01' = {
     }
   }
 
-  resource networkRules 'networkRuleSets' = {
+  resource networkRules 'networkRuleSets' = if (deployInVnet) {
     name: 'default'
     properties: {
       defaultAction: 'Deny'

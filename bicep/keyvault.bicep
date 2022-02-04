@@ -31,9 +31,9 @@ resource keyvault 'Microsoft.KeyVault/vaults@2019-09-01' = {
         tenantId: tenantId
       }
     ]
-    networkAcls: {
+    networkAcls: deployInVnet ? {
       defaultAction: 'Allow' // Allow to be able to deploy from GitHub managed runners
-    }
+    } : null
     enableSoftDelete: false
   }
 

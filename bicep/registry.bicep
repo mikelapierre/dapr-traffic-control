@@ -13,9 +13,9 @@ resource registry 'Microsoft.ContainerRegistry/registries@2019-05-01' = {
   }
   properties: {
     adminUserEnabled: true
-    networkRuleSet: {
+    networkRuleSet: deployInVnet ? {
       defaultAction: 'Allow' // Allow to be able to deploy from GitHub managed runners
-    }
+    } : null
   }
 }
 
