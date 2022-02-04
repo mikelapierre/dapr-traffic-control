@@ -5,18 +5,18 @@ resource vnet 'Microsoft.Network/virtualNetworks@2021-05-01' = {
   name: vnetName
   location: location
   properties: {
-     addressSpace: {
-        addressPrefixes: [
-          '10.10.0.0/16'
-        ]      
-     }
-     subnets: [
+    addressSpace: {
+      addressPrefixes: [
+        '10.10.0.0/16'
+      ]
+    }
+    subnets: [
       {
         name: 'container-apps'
         properties: {
-           addressPrefix: '10.10.0.0/21'
+          addressPrefix: '10.10.0.0/21'
         }
-      }       
+      }
       {
         name: 'container-controlplane'
         properties: {
@@ -26,17 +26,25 @@ resource vnet 'Microsoft.Network/virtualNetworks@2021-05-01' = {
       {
         name: 'container-instances'
         properties: {
-            addressPrefix: '10.10.16.0/24'
+          addressPrefix: '10.10.16.0/24'
+          delegations: [
+            {
+              name: 'Microsoft.ContainerInstance/containerGroups'
+              properties: {
+                serviceName: 'Microsoft.ContainerInstance/containerGroups'
+              }
+            }
+          ]
         }
-      }       
+      }
       {
         name: 'private-endpoints'
         properties: {
-            addressPrefix: '10.10.17.0/24'
-            privateEndpointNetworkPolicies: 'Disabled'
+          addressPrefix: '10.10.17.0/24'
+          privateEndpointNetworkPolicies: 'Disabled'
         }
-      }        
-     ]
+      }
+    ]
   }
 }
 
