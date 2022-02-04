@@ -27,9 +27,9 @@ module keyvault 'keyvault.bicep' = {
     objectId: servicePrincipalId
     vaultName: vaultName
     deployInVnet: deployInVnet
-    vnetId: vnet.outputs.vnetId
-    privateEndpointSubnetId: vnet.outputs.privateEndpointSubnetId
-    containerInstanceSubnetId: vnet.outputs.containerInstanceSubnetId
+    vnetId: deployInVnet ? vnet.outputs.vnetId : ''
+    privateEndpointSubnetId: deployInVnet ? vnet.outputs.privateEndpointSubnetId : ''
+    containerInstanceSubnetId: deployInVnet ? vnet.outputs.containerInstanceSubnetId : ''
   }
 }
 
@@ -40,8 +40,8 @@ module storage 'storage.bicep' = {
     storageAccountName: storageAccountName
     vaultName: vaultName
     deployInVnet: deployInVnet
-    vnetId: vnet.outputs.vnetId
-    privateEndpointSubnetId: vnet.outputs.privateEndpointSubnetId    
+    vnetId: deployInVnet ? vnet.outputs.vnetId : ''
+    privateEndpointSubnetId: deployInVnet ? vnet.outputs.privateEndpointSubnetId : '' 
   }
   dependsOn: [
     keyvault
@@ -55,8 +55,8 @@ module registry 'registry.bicep' = {
     registryName: registryName
     vaultName: vaultName
     deployInVnet: deployInVnet
-    vnetId: vnet.outputs.vnetId
-    privateEndpointSubnetId: vnet.outputs.privateEndpointSubnetId        
+    vnetId: deployInVnet ? vnet.outputs.vnetId : ''
+    privateEndpointSubnetId: deployInVnet ? vnet.outputs.privateEndpointSubnetId : ''    
   }
   dependsOn: [
     keyvault
@@ -70,8 +70,8 @@ module servicebus 'servicebus.bicep' = {
     serviceBusNamespaceName: serviceBusNamespaceName
     vaultName: vaultName
     deployInVnet: deployInVnet
-    vnetId: vnet.outputs.vnetId
-    privateEndpointSubnetId: vnet.outputs.privateEndpointSubnetId           
+    vnetId: deployInVnet ? vnet.outputs.vnetId : ''
+    privateEndpointSubnetId: deployInVnet ? vnet.outputs.privateEndpointSubnetId : ''       
   }
   dependsOn: [
     keyvault
@@ -85,8 +85,8 @@ module eventhub 'eventhub.bicep' = {
     eventHubNamespaceName: eventHubNamespaceName
     vaultName: vaultName
     deployInVnet: deployInVnet
-    vnetId: vnet.outputs.vnetId
-    privateEndpointSubnetId: vnet.outputs.privateEndpointSubnetId    
+    vnetId: deployInVnet ? vnet.outputs.vnetId : ''
+    privateEndpointSubnetId: deployInVnet ? vnet.outputs.privateEndpointSubnetId : ''
   }
   dependsOn: [
     keyvault
@@ -101,8 +101,8 @@ module environment 'environment.bicep' = {
     location: location
     vaultName: vaultName
     deployInVnet: deployInVnet
-    appsSubnetId: vnet.outputs.appSubnetId
-    controlPlaneSubnetId: vnet.outputs.controlPlanSubnetId
+    appsSubnetId: deployInVnet ? vnet.outputs.appSubnetId : ''
+    controlPlaneSubnetId: deployInVnet ? vnet.outputs.controlPlanSubnetId : ''
   }
   dependsOn: [
     keyvault
