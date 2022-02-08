@@ -30,7 +30,7 @@ resource appInsights 'Microsoft.Insights/components@2020-02-02-preview' = {
   }
 }
 
-resource environment 'Microsoft.Web/kubeEnvironments@2021-02-01' = {
+resource environment 'Microsoft.Web/kubeEnvironments@2021-03-01' = {
   name: environmentName
   location: location
   properties: {
@@ -47,6 +47,7 @@ resource environment 'Microsoft.Web/kubeEnvironments@2021-02-01' = {
       daprAIInstrumentationKey: appInsights.properties.InstrumentationKey
       appSubnetResourceId: deployInVnet ? appsSubnetId : null
       controlPlaneSubnetResourceId: deployInVnet ? controlPlaneSubnetId : null
+      internalOnly: deployInVnet
     }
   }
 }
