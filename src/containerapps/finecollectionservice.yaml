@@ -38,6 +38,9 @@ template:
       name: pubsub
       type: pubsub.azure.servicebus
       version: v1
+      scopes:
+        - trafficcontrolservice
+        - finecollectionservice
     - metadata:
       - name: host
         value: #{smtp-host}#
