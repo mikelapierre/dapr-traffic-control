@@ -50,6 +50,8 @@ template:
       name: entrycam
       type: bindings.azure.eventhubs
       version: v1
+      scopes:
+        - trafficcontrolservice
     - metadata:
       - name: connectionString
         secretRef: exitcam-connectionstring
@@ -64,6 +66,8 @@ template:
       name: exitcam
       type: bindings.azure.eventhubs
       version: v1
+      scopes:
+        - trafficcontrolservice      
     - metadata:
       - name: accountName
         value: #{storageaccount-name}#
@@ -80,6 +84,9 @@ template:
       name: pubsub
       type: pubsub.azure.servicebus
       version: v1
+      scopes:
+        - trafficcontrolservice
+        - finecollectionservice      
     enabled: true
   revisionSuffix: #{revision-suffix}#
   scale:
