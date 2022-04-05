@@ -112,6 +112,6 @@ jobs:
           inlineScript: |
             echo "Installing containerapp extension"
             az provider register --namespace Microsoft.App
-            az extension add --source https://workerappscliextension.blob.core.windows.net/azure-cli-extension/containerapp-0.2.0-py2.py3-none-any.whl --yes
+            az extension add --name containerapp --yes
             echo "Starting Deploying"
             az containerapp ${{ env.ACTION }} -n vehicleregistrationservice -g ${{ steps.getSecrets.outputs.resourceGroup }} --yaml ./master/src/containerapps/vehicleregistrationservice.yaml --debug
