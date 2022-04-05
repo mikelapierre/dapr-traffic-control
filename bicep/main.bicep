@@ -95,7 +95,7 @@ module eventhub 'eventhub.bicep' = {
 }
 
 resource kv 'Microsoft.KeyVault/vaults@2019-09-01' existing = {
-  name: keyvault.name
+  name: vaultName
 }
 
 module environment 'environment.bicep' = {
