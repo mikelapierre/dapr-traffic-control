@@ -101,11 +101,9 @@ module environment 'environment.bicep' = {
     location: location
     vaultName: vaultName    
     storageAccountName: storageAccountName
-    storageAccountKey: listKeys(resourceId('Microsoft.Storage/storageAccounts', storageAccountName), '2021-04-01').keys[0].value
-    entrycamConnectionString: ''
-    exitcamConnectionString: ''
-    serviceBusConnectionString: ''
-    smtpHost: ''
+    eventHubNamespaceName: eventHubNamespaceName
+    serviceBusNamespaceName: serviceBusNamespaceName
+    smtpHost: maildev.outputs.smtpHost
     deployInVnet: deployInVnet
     appsSubnetId: deployInVnet ? vnet.outputs.appSubnetId : ''
     controlPlaneSubnetId: deployInVnet ? vnet.outputs.controlPlanSubnetId : ''
@@ -115,7 +113,6 @@ module environment 'environment.bicep' = {
     storage
     eventhub
     servicebus
-    maildev
   ] 
 }
 

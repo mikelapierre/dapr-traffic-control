@@ -65,3 +65,5 @@ resource keyvault 'Microsoft.KeyVault/vaults@2019-09-01' existing =  {
     }
   } 
 }
+
+output smtpHost string = maildev.properties.ipAddress.fqdn

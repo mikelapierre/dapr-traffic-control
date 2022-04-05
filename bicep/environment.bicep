@@ -3,21 +3,43 @@ param logAnalyticsWorkspaceName string = 'logs-${environmentName}'
 param appInsightsName string = 'appins-${environmentName}'
 param location string = resourceGroup().location
 param vaultName string
-@secure()
 param storageAccountName string
-@secure()
-param storageAccountKey string
-@secure()
-param entrycamConnectionString string
-@secure()
-param exitcamConnectionString string
-@secure()
-param serviceBusConnectionString string
-@secure()
+param eventHubNamespaceName string
+param serviceBusNamespaceName string
 param smtpHost string
 param deployInVnet bool
 param appsSubnetId string = ''
 param controlPlaneSubnetId string = ''
+
+resource storageAccount 'Microsoft.Storage/storageAccounts@2021-04-01' existing = {
+  name: storageAccountName
+}
+
+resource eventhubNs 'Microsoft.EventHub/namespaces@2017-04-01' existing = {
+  name: eventHubNamespaceName
+  resource entrycamHub 'eventhubs' existing = {
+    name: 'entrycam'
+    resource authRule 'authorizationRules' existing = {
+      name: 'Full'
+    }    
+  }
+  resource exitcamHub 'eventhubs' existing = {
+    name: 'exitcam'
+    resource authRule 'authorizationRules' existing = {
+      name: 'Full'
+    }     
+  }  
+}
+
+resource servicebusNs 'Microsoft.ServiceBus/namespaces@2017-04-01' existing = {
+  name: serviceBusNamespaceName
+  resource topic 'topics' existing = {
+    name: 'speedingviolations'
+    resource authRule 'authorizationRules' existing = {
+      name: 'Full'
+    }
+  }
+}
 
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2020-03-01-preview' = {
   name: logAnalyticsWorkspaceName
@@ -69,7 +91,7 @@ resource environment 'Microsoft.App/managedEnvironments@2022-01-01-preview' = {
        secrets: [
         {
           name: 'servicebus-connectionstring'
-          value: serviceBusConnectionString
+          value: servicebusNs::topic::authRule.listkeys().primaryConnectionString
         }
        ]
        metadata: [
@@ -97,11 +119,11 @@ resource environment 'Microsoft.App/managedEnvironments@2022-01-01-preview' = {
        secrets: [
         {
           name: 'entrycam-connectionstring'
-          value: entrycamConnectionString
-        }
+          value: eventhubNs::entrycamHub::authRule.listkeys().primaryConnectionString
+        } 
         {
           name: 'storageaccount-key'
-          value: storageAccountKey
+          value: storageAccount.listKeys().keys[0].value
         }        
        ]
        metadata: [
@@ -140,11 +162,11 @@ resource environment 'Microsoft.App/managedEnvironments@2022-01-01-preview' = {
        secrets: [
         {
           name: 'exitcam-connectionstring'
-          value: exitcamConnectionString
+          value: eventhubNs::exitcamHub::authRule.listkeys().primaryConnectionString
         }
         {
           name: 'storageaccount-key'
-          value: storageAccountKey
+          value: storageAccount.listKeys().keys[0].value
         }        
        ]
        metadata: [
@@ -183,7 +205,7 @@ resource environment 'Microsoft.App/managedEnvironments@2022-01-01-preview' = {
        secrets: [
         {
           name: 'storageaccount-key'
-          value: storageAccountKey
+          value: storageAccount.listKeys().keys[0].value
         }        
        ]
        metadata: [
