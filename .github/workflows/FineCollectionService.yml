@@ -77,7 +77,7 @@ jobs:
         uses: azure/get-keyvault-secrets@v1
         with:
           keyvault: ${{ secrets.KEYVAULT_NAME }}
-          secrets: 'resourceGroup,registryServer,registryUsername,registryPassword,environmentId,serviceBusConnectionString,maildevHost'
+          secrets: 'resourceGroup,registryServer,registryUsername,registryPassword,environmentId,serviceBusConnectionString'
         id: getSecrets 
 
       - name: Generate variables
@@ -101,10 +101,6 @@ jobs:
           environment-id:  ${{ steps.getSecrets.outputs.environmentId }}
           servicebus-connectionstring: ${{ steps.getSecrets.outputs.serviceBusConnectionString }}
           finecalculator-licensekey: HX783-K2L7V-CRJ4A-5PN1G
-          smtp-host: ${{ steps.getSecrets.outputs.maildevHost }}
-          smtp-port: 1025
-          smtp-username: _username
-          smtp-password: _password
           image-tag: ${{ github.sha }}          
           revision-suffix: ${{ env.REVISION_SUFFIX }}
     
@@ -117,7 +113,7 @@ jobs:
           azcliversion: latest
           inlineScript: |
             echo "Installing containerapp extension"
-            az provider register --namespace Microsoft.Web
+            az provider register --namespace Microsoft.App
             az extension add --source https://workerappscliextension.blob.core.windows.net/azure-cli-extension/containerapp-0.2.0-py2.py3-none-any.whl --yes
             echo "Starting Deploying"
             az containerapp ${{ env.ACTION }} -n finecollectionservice -g ${{ steps.getSecrets.outputs.resourceGroup }} --yaml ./master/src/containerapps/finecollectionservice.yaml --debug

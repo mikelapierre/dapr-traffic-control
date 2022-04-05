@@ -23,4 +23,4 @@ template:
   scale:
     maxReplicas: 5
     minReplicas: 0
-type: Microsoft.Web/containerApps
+type: Microsoft.App/containerApps
