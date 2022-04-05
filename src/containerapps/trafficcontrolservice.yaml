@@ -13,7 +13,7 @@ configuration:
     value: #{exitcam-connectionstring}#
   - name: storageaccount-connectionstring
     value: DefaultEndpointsProtocol=https;AccountName=#{storageaccount-name}#;AccountKey=#{storageaccount-key}#;EndpointSuffix=core.windows.net 
-kubeEnvironmentId: #{environment-id}#    
+managedEnvironmentId: #{environment-id}#    
 template:
   containers:
   - image: #{registry-server}#/trafficcontrolservice:#{image-tag}#

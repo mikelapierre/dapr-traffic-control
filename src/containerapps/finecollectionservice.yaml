@@ -11,7 +11,7 @@ configuration:
     value: #{finecalculator-licensekey}#
   - name: servicebus-connectionstring
     value: #{servicebus-connectionstring}#
-kubeEnvironmentId: #{environment-id}#    
+managedEnvironmentId: #{environment-id}#    
 template:
   containers:
   - env:

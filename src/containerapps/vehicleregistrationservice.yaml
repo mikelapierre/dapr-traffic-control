@@ -7,7 +7,7 @@ configuration:
   secrets:
   - name: registry-password
     value: #{registry-password}#
-kubeEnvironmentId: #{environment-id}#
+managedEnvironmentId: #{environment-id}#
 template:
   containers:
   - image: #{registry-server}#/vehicleregistrationservice:#{image-tag}#
