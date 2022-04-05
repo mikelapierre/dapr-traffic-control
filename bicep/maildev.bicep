@@ -10,14 +10,7 @@ resource maildev 'Microsoft.ContainerInstance/containerGroups@2021-07-01' = {
       {
         name: 'maildev'
         properties: {
-          image: 'soulteary/maildev'
-          command:  [
-            '/usr/src/app/bin/maildev'
-            '-s'
-            '1025'
-            '-w'
-            '1080'
-          ]
+          image: 'maildev/maildev'
           ports: [
             {
               port: 1025
