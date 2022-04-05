@@ -11,13 +11,13 @@ configuration:
     value: #{entrycam-connectionstring}#
   - name: exitcam-connectionstring
     value: #{exitcam-connectionstring}#
-  - name: servicebus-connectionstring
-    value: #{servicebus-connectionstring}#
-  - name: storageaccount-key
-    value: #{storageaccount-key}#
   - name: storageaccount-connectionstring
     value: DefaultEndpointsProtocol=https;AccountName=#{storageaccount-name}#;AccountKey=#{storageaccount-key}#;EndpointSuffix=core.windows.net 
-kubeEnvironmentId: #{environment-id}#    
+  dapr:
+    appId: trafficcontrolservice
+    appPort: 6000
+    enabled: true    
+managedEnvironmentId: #{environment-id}#    
 template:
   containers:
   - image: #{registry-server}#/trafficcontrolservice:#{image-tag}#
@@ -32,62 +32,6 @@ template:
         secretRef: exitcam-connectionstring
       - name: STORAGE_CONNECTIONSTRING
         secretRef: storageaccount-connectionstring
-  dapr:
-    appId: trafficcontrolservice
-    appPort: 6000
-    components:
-    - metadata:
-      - name: connectionString
-        secretRef: entrycam-connectionstring
-      - name: consumerGroup
-        value: $Default
-      - name: storageAccountName
-        value: #{storageaccount-name}#
-      - name: storageAccountKey
-        secretRef: storageaccount-key
-      - name: storageContainerName
-        value: entrycam-checkpoint
-      name: entrycam
-      type: bindings.azure.eventhubs
-      version: v1
-      scopes:
-        - trafficcontrolservice
-    - metadata:
-      - name: connectionString
-        secretRef: exitcam-connectionstring
-      - name: consumerGroup
-        value: $Default
-      - name: storageAccountName
-        value: #{storageaccount-name}#
-      - name: storageAccountKey
-        secretRef: storageaccount-key
-      - name: storageContainerName
-        value: exitcam-checkpoint
-      name: exitcam
-      type: bindings.azure.eventhubs
-      version: v1
-      scopes:
-        - trafficcontrolservice      
-    - metadata:
-      - name: accountName
-        value: #{storageaccount-name}#
-      - name: accountKey
-        secretRef: storageaccount-key
-      - name: containerName
-        value: dapr-state
-      name: statestore
-      type: state.azure.blobstorage
-      version: v1
-    - metadata:
-      - name: connectionString
-        secretRef: servicebus-connectionstring
-      name: pubsub
-      type: pubsub.azure.servicebus
-      version: v1
-      scopes:
-        - trafficcontrolservice
-        - finecollectionservice      
-    enabled: true
   revisionSuffix: #{revision-suffix}#
   scale:
     maxReplicas: 5
@@ -111,4 +55,4 @@ template:
           checkpointStrategy: goSdk
         type: azure-eventhub
       name: exitcam-eventhub-autoscale         
-type: Microsoft.Web/containerApps
+type: Microsoft.App/containerApps

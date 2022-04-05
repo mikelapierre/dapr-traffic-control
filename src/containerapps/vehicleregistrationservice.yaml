@@ -7,7 +7,11 @@ configuration:
   secrets:
   - name: registry-password
     value: #{registry-password}#
-kubeEnvironmentId: #{environment-id}#
+  dapr:
+    appId: vehicleregistrationservice
+    appPort: 6002
+    enabled: true    
+managedEnvironmentId: #{environment-id}#
 template:
   containers:
   - image: #{registry-server}#/vehicleregistrationservice:#{image-tag}#
@@ -15,12 +19,8 @@ template:
     resources:
       cpu: 0.25
       memory: .5Gi
-  dapr:
-    appId: vehicleregistrationservice
-    appPort: 6002
-    enabled: true
   revisionSuffix: #{revision-suffix}#
   scale:
     maxReplicas: 5
     minReplicas: 0
-type: Microsoft.Web/containerApps
+type: Microsoft.App/containerApps

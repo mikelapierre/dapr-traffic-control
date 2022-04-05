@@ -99,13 +99,20 @@ module environment 'environment.bicep' = {
   params: {
     environmentName: environmentName
     location: location
-    vaultName: vaultName
+    vaultName: vaultName    
+    storageAccountName: storageAccountName
+    eventHubNamespaceName: eventHubNamespaceName
+    serviceBusNamespaceName: serviceBusNamespaceName
+    smtpHost: maildev.outputs.smtpHost
     deployInVnet: deployInVnet
     appsSubnetId: deployInVnet ? vnet.outputs.appSubnetId : ''
     controlPlaneSubnetId: deployInVnet ? vnet.outputs.controlPlanSubnetId : ''
   }
   dependsOn: [
-    keyvault
+    keyvault    
+    storage
+    eventhub
+    servicebus
   ] 
 }
 

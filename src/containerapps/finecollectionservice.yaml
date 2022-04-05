@@ -11,11 +11,11 @@ configuration:
     value: #{finecalculator-licensekey}#
   - name: servicebus-connectionstring
     value: #{servicebus-connectionstring}#
-  - name: smtp-username
-    value: #{smtp-username}#    
-  - name: smtp-password
-    value: #{smtp-password}#
-kubeEnvironmentId: #{environment-id}#    
+  dapr:
+    appId: finecollectionservice
+    appPort: 6001
+    enabled: true    
+managedEnvironmentId: #{environment-id}#    
 template:
   containers:
   - env:
@@ -26,36 +26,6 @@ template:
     resources:
       cpu: 0.25
       memory: .5Gi
-  dapr:
-    appId: finecollectionservice
-    appPort: 6001
-    components:
-    - metadata:
-      - name: connectionString
-        secretRef: servicebus-connectionstring
-      - name: consumerID
-        value: finecollectionservice
-      name: pubsub
-      type: pubsub.azure.servicebus
-      version: v1
-      scopes:
-        - trafficcontrolservice
-        - finecollectionservice
-    - metadata:
-      - name: host
-        value: #{smtp-host}#
-      - name: port
-        value: #{smtp-port}#
-      - name: user
-        secretRef: smtp-username
-      - name: password
-        secretRef: smtp-password
-      - name: skipTLSVerify
-        value: true
-      name: sendmail
-      type: bindings.smtp
-      version: v1
-    enabled: true
   revisionSuffix: #{revision-suffix}#
   scale:
     maxReplicas: 5
@@ -71,4 +41,4 @@ template:
           topicName: speedingviolations
         type: azure-servicebus
       name: service-bus-autoscale
-type: Microsoft.Web/containerApps
+type: Microsoft.App/containerApps

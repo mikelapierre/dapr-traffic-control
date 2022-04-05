@@ -11,13 +11,6 @@ resource maildev 'Microsoft.ContainerInstance/containerGroups@2021-07-01' = {
         name: 'maildev'
         properties: {
           image: 'maildev/maildev'
-          command:  [
-            '/usr/src/app/bin/maildev'
-            '-s'
-            '1025'
-            '-w'
-            '1080'
-          ]
           ports: [
             {
               port: 1025
@@ -65,3 +58,5 @@ resource keyvault 'Microsoft.KeyVault/vaults@2019-09-01' existing =  {
     }
   } 
 }
+
+output smtpHost string = maildev.properties.ipAddress.fqdn
