@@ -10,7 +10,7 @@ resource maildev 'Microsoft.ContainerInstance/containerGroups@2021-07-01' = {
       {
         name: 'maildev'
         properties: {
-          image: 'maildev/maildev'
+          image: 'soulteary/maildev'
           command:  [
             '/usr/src/app/bin/maildev'
             '-s'
