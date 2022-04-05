@@ -220,9 +220,13 @@ resource environment 'Microsoft.App/managedEnvironments@2022-01-01-preview' = {
           value: storageAccountName
         }        
         {
-          name: 'storageAccountKey'
+          name: 'accountKey'
           secretRef: 'storageaccount-key'
         }
+        {
+          name: 'containerName'
+          value: 'dapr-state'
+        }        
        ]
        scopes: [
         'trafficcontrolservice'
