@@ -13,6 +13,10 @@ configuration:
     value: #{exitcam-connectionstring}#
   - name: storageaccount-connectionstring
     value: DefaultEndpointsProtocol=https;AccountName=#{storageaccount-name}#;AccountKey=#{storageaccount-key}#;EndpointSuffix=core.windows.net 
+  dapr:
+    appId: trafficcontrolservice
+    appPort: 6000
+    enabled: true    
 managedEnvironmentId: #{environment-id}#    
 template:
   containers:
@@ -28,10 +32,6 @@ template:
         secretRef: exitcam-connectionstring
       - name: STORAGE_CONNECTIONSTRING
         secretRef: storageaccount-connectionstring
-  dapr:
-    appId: trafficcontrolservice
-    appPort: 6000
-    enabled: true
   revisionSuffix: #{revision-suffix}#
   scale:
     maxReplicas: 5

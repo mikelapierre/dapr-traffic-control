@@ -11,6 +11,10 @@ configuration:
     value: #{finecalculator-licensekey}#
   - name: servicebus-connectionstring
     value: #{servicebus-connectionstring}#
+  dapr:
+    appId: finecollectionservice
+    appPort: 6001
+    enabled: true    
 managedEnvironmentId: #{environment-id}#    
 template:
   containers:
@@ -22,10 +26,6 @@ template:
     resources:
       cpu: 0.25
       memory: .5Gi
-  dapr:
-    appId: finecollectionservice
-    appPort: 6001
-    enabled: true
   revisionSuffix: #{revision-suffix}#
   scale:
     maxReplicas: 5
