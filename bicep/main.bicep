@@ -94,22 +94,12 @@ module eventhub 'eventhub.bicep' = {
   ] 
 }
 
-resource kv 'Microsoft.KeyVault/vaults@2019-09-01' existing = {
-  name: vaultName
-}
-
-module environment 'environment.bicep' = {
+module environment 'env.bicep' = {
   name: 'container-app-environment'
   params: {
     environmentName: environmentName
     location: location
     vaultName: vaultName    
-    storageAccountName: kv.getSecret('storageAccountName')
-    storageAccountKey: kv.getSecret('storageAccountKey')
-    entrycamConnectionString: kv.getSecret('entrycamConnectionString')
-    exitcamConnectionString: kv.getSecret('entrycamConnectionString')
-    serviceBusConnectionString: kv.getSecret('serviceBusConnectionString')
-    smtpHost: kv.getSecret('maildevHost')
     deployInVnet: deployInVnet
     appsSubnetId: deployInVnet ? vnet.outputs.appSubnetId : ''
     controlPlaneSubnetId: deployInVnet ? vnet.outputs.controlPlanSubnetId : ''
