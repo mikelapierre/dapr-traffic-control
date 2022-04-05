@@ -94,12 +94,18 @@ module eventhub 'eventhub.bicep' = {
   ] 
 }
 
-module environment 'env.bicep' = {
+module environment 'environment.bicep' = {
   name: 'container-app-environment'
   params: {
     environmentName: environmentName
     location: location
     vaultName: vaultName    
+    storageAccountName: storageAccountName
+    storageAccountKey: listKeys(resourceId('Microsoft.Storage/storageAccounts', storageAccountName), '2021-04-01').keys[0].value
+    entrycamConnectionString: ''
+    exitcamConnectionString: ''
+    serviceBusConnectionString: ''
+    smtpHost: ''
     deployInVnet: deployInVnet
     appsSubnetId: deployInVnet ? vnet.outputs.appSubnetId : ''
     controlPlaneSubnetId: deployInVnet ? vnet.outputs.controlPlanSubnetId : ''
