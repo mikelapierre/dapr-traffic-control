@@ -152,6 +152,9 @@ resource environment 'Microsoft.App/managedEnvironments@2022-01-01-preview' = {
         'trafficcontrolservice'
        ]
      }
+     dependsOn: [
+      pubsub
+     ]         
   }
 
   resource exitcam 'daprComponents' = {
@@ -195,6 +198,9 @@ resource environment 'Microsoft.App/managedEnvironments@2022-01-01-preview' = {
         'trafficcontrolservice'
        ]
      }
+     dependsOn: [
+      entrycam
+     ]       
   }
 
   resource statestore 'daprComponents' = {
@@ -222,6 +228,9 @@ resource environment 'Microsoft.App/managedEnvironments@2022-01-01-preview' = {
         'trafficcontrolservice'
        ]
      }
+     dependsOn: [
+      exitcam
+     ]     
   }  
 
   resource sendmail 'daprComponents' = {
@@ -265,6 +274,9 @@ resource environment 'Microsoft.App/managedEnvironments@2022-01-01-preview' = {
         'finecollectionservice'
        ]
      }
+     dependsOn: [
+      statestore
+     ]
   }  
 
 }
