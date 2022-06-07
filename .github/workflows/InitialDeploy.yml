@@ -40,7 +40,7 @@ jobs:
         with:
           inlineScript: |
             clientId=`echo '${{ secrets.AZURE_CREDENTIALS }}' | jq -r .clientId`
-            az ad sp show --id $clientId`
+            az ad sp show --id $clientId
             objectId=`az ad sp show --id $clientId | jq -r .objectId`
             echo "objectId=$objectId" >> $GITHUB_ENV
 
