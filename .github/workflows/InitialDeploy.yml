@@ -41,7 +41,7 @@ jobs:
           inlineScript: |
             clientId=`echo '${{ secrets.AZURE_CREDENTIALS }}' | jq -r .clientId`
             az ad sp show --id $clientId
-            objectId=`az ad sp show --id $clientId | jq -r .objectId`
+            objectId=`az ad sp show --id $clientId | jq -r .id`
             echo "objectId=$objectId" >> $GITHUB_ENV
 
       - name: Deploy bicep
