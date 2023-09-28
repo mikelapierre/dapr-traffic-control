@@ -10,7 +10,8 @@ configuration:
   dapr:
     appId: vehicleregistrationservice
     appPort: 6002
-    enabled: true    
+    enabled: true
+    enableApiLogging: false
 managedEnvironmentId: #{environment-id}#
 template:
   containers:
