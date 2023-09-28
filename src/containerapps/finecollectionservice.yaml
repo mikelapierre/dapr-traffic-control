@@ -14,8 +14,9 @@ configuration:
   dapr:
     appId: finecollectionservice
     appPort: 6001
-    enabled: true    
-environmentId: #{environment-id}#    
+    enabled: true
+    enableApiLogging: false
+managedEnvironmentId: #{environment-id}#    
 template:
   containers:
   - env:
