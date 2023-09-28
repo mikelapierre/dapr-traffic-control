@@ -15,7 +15,7 @@ configuration:
     appId: finecollectionservice
     appPort: 6001
     enabled: true    
-managedEnvironmentId: #{environment-id}#    
+environmentId: #{environment-id}#    
 template:
   containers:
   - env:
