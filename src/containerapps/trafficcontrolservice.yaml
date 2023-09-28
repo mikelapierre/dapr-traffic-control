@@ -16,7 +16,8 @@ configuration:
   dapr:
     appId: trafficcontrolservice
     appPort: 6000
-    enabled: true    
+    enabled: true
+    enableApiLogging: false
 managedEnvironmentId: #{environment-id}#    
 template:
   containers:
