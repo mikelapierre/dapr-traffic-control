@@ -78,7 +78,6 @@ resource environment 'Microsoft.App/managedEnvironments@2023-05-01' = {
     }
     vnetConfiguration: {
       infrastructureSubnetId: deployInVnet ? controlPlaneSubnetId : null
-      runtimeSubnetId: deployInVnet ? appsSubnetId : null
       internal: deployInVnet      
     }
   }
