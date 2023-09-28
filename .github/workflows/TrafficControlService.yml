@@ -115,7 +115,7 @@ jobs:
           azcliversion: latest
           inlineScript: |
             echo "Installing containerapp extension"
-            az provider register --namespace Microsoft.App
+            #az provider register --namespace Microsoft.App
             az extension add --name containerapp --yes
             echo "Starting Deploying"
             az containerapp ${{ env.ACTION }} -n trafficcontrolservice -g ${{ steps.getSecrets.outputs.resourceGroup }} --yaml ./master/src/containerapps/trafficcontrolservice.yaml --debug
