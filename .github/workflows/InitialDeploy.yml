@@ -9,7 +9,7 @@ on:
       resourceGroup:
         description: 'Resource Group'
         required: true
-        default: 'dapr-workshop'
+        default: 'aca-dapr-rg'
       location:
         description: 'Location'
         required: true
